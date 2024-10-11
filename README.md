@@ -18,33 +18,6 @@
 * 플레이어 동작
   * 이동
   + 회피 - 구르기 or 대쉬
-  + 공격 - 2연격
- 
-
-* 적대적 생명체
-  + 보스 2~3 마리
-
-
-* 개발 일정 2DGP Project
-> 2024-2 2DGP 프로젝트입니다.
-
-![header](https://capsule-render.vercel.app/api?type=transparent&height=300&color=gradient&text=Game%20Title&section=header&textBg=false&fontSize=80&fontAlign=30&fontAlignY=60&animation=twinkling&rotate=0&desc=-sub%20title-&descAlign=70&descAlignY=65&descSize=30&theme=radical)
-
-## 게임 컨셉
-
-> 근접전으로 진행되는 타이탄 소울방식의 게임
-
-근접전 형태의 타이탄 소울
- + 탑 다운
- + 보스러시
-
-## 개발 목표
-
-> 2 ~ 3 종류의 보스를 만들고 플레이어가 클리어 할 수 있게 구현한다.
-
-* 플레이어 동작
-  * 이동
-  + 회피 - 구르기 or 대쉬
   + 공격 - 2연격 (중간에 끊고 회피기 사용할 수 있게)
  
 
