@@ -14,36 +14,39 @@ def handle_events():
                 running = False
             elif event.key == SDLK_s:
                 player.switch_dir(0)
-                player.state = 'move'
+                player.switch_state('move')
             elif event.key == SDLK_w:
                 player.switch_dir(1)
-                player.state = 'move'
+                player.switch_state('move')
             elif event.key == SDLK_d:
                 player.switch_dir(2)
-                player.state = 'move'
+                player.switch_state('move')
             elif event.key == SDLK_a:
                 player.switch_dir(3)
-                player.state = 'move'
+                player.switch_state('move')
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_s:
                 if player.dir[0]:
-                    player.state = 'idle'
+                    player.switch_state('idle')
             elif event.key == SDLK_w:
                 if player.dir[1]:
-                    player.state = 'idle'
+                    player.switch_state('idle')
             elif event.key == SDLK_d:
                 if player.dir[2]:
-                    player.state = 'idle'
+                    player.switch_state('idle')
             elif event.key == SDLK_a:
                 if player.dir[3]:
-                    player.state = 'idle'
+                    player.switch_state('idle')
         elif event.type == SDL_MOUSEBUTTONDOWN:
             if event.button == SDL_BUTTON_LEFT:
                 if player.state == 'attack':
-                    player.state = 'attack_2'
+                    player.attack_side = 1
+                elif player.state == 'attack_2':
+                    player.attack_side = 2
                 else:
                     player.frame = 0
-                    player.state = 'attack'
+                    player.attack_side = 0
+                    player.switch_state('attack')
     
 
 def update_world():
