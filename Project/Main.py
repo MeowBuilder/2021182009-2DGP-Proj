@@ -1,8 +1,6 @@
 from pico2d import *
 from Player import *
 import threading
-# class
-
 
 # func
 def handle_events():
@@ -14,31 +12,34 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 running = False
-            elif event.key == SDLK_DOWN:
+            elif event.key == SDLK_s:
                 player.switch_dir(0)
                 player.state = 'move'
-            elif event.key == SDLK_UP:
+            elif event.key == SDLK_w:
                 player.switch_dir(1)
                 player.state = 'move'
-            elif event.key == SDLK_RIGHT:
+            elif event.key == SDLK_d:
                 player.switch_dir(2)
                 player.state = 'move'
-            elif event.key == SDLK_LEFT:
+            elif event.key == SDLK_a:
                 player.switch_dir(3)
                 player.state = 'move'
         elif event.type == SDL_KEYUP:
-            if event.key == SDLK_DOWN:
+            if event.key == SDLK_s:
                 if player.dir[0]:
                     player.state = 'idle'
-            elif event.key == SDLK_UP:
+            elif event.key == SDLK_w:
                 if player.dir[1]:
                     player.state = 'idle'
-            elif event.key == SDLK_RIGHT:
+            elif event.key == SDLK_d:
                 if player.dir[2]:
                     player.state = 'idle'
-            elif event.key == SDLK_LEFT:
+            elif event.key == SDLK_a:
                 if player.dir[3]:
                     player.state = 'idle'
+        elif event.type == SDL_MOUSEBUTTONDOWN:
+            if event.button == SDL_BUTTON_LEFT:
+                player.state = 'attack'
     
 
 def update_world():
