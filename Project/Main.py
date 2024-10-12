@@ -1,6 +1,6 @@
 from pico2d import *
 from Player import *
-
+import threading
 # class
 
 
@@ -15,35 +15,39 @@ def handle_events():
             if event.key == SDLK_ESCAPE:
                 running = False
             elif event.key == SDLK_DOWN:
-                player.dir[0] = True
+                player.switch_dir(0)
                 player.state = 'move'
             elif event.key == SDLK_UP:
-                player.dir[1] = True
+                player.switch_dir(1)
                 player.state = 'move'
             elif event.key == SDLK_RIGHT:
-                player.dir[2] = True
+                player.switch_dir(2)
                 player.state = 'move'
             elif event.key == SDLK_LEFT:
-                player.dir[3] = True
+                player.switch_dir(3)
                 player.state = 'move'
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_DOWN:
-                player.dir[0] = False
-                player.state = 'idle'
+                if player.dir[0]:
+                    player.state = 'idle'
             elif event.key == SDLK_UP:
-                player.dir[1] = False
-                player.state = 'idle'
+                if player.dir[1]:
+                    player.state = 'idle'
             elif event.key == SDLK_RIGHT:
-                player.dir[2] = False
-                player.state = 'idle'
+                if player.dir[2]:
+                    player.state = 'idle'
             elif event.key == SDLK_LEFT:
-                player.dir[3] = False
-                player.state = 'idle'
+                if player.dir[3]:
+                    player.state = 'idle'
     
 
 def update_world():
     for o in world:
         o.update()
+    render_world()
+    
+    if running:
+        threading.Timer(0.05,update_world).start()
     pass
 
 def render_world():
@@ -73,11 +77,10 @@ def main():
     open_canvas()
     reset_world()
     
+    update_world()
+    
     while running:
         handle_events()
-        update_world()
-        render_world()
-        delay(0.05)
     
     close_canvas()
     pass
