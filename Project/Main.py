@@ -1,15 +1,8 @@
 from pico2d import *
+from Player import *
 
 # class
-class Player:
-    def __init__(self):
-        self.image = load_image('./Asset/Character/Front Movement.png')
-        self.frame = 0
-        self.x,self.y = 400,300
-    def update(self):
-        pass
-    def draw(self):
-        self.image.clip_draw(self.frame*64,64,64,64,self.x,self.y,128,128)
+
 
 # func
 def handle_events():
@@ -21,9 +14,31 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 running = False
-            pass
+            elif event.key == SDLK_DOWN:
+                player.dir[0] = True
+                player.state = 'move'
+            elif event.key == SDLK_UP:
+                player.dir[1] = True
+                player.state = 'move'
+            elif event.key == SDLK_RIGHT:
+                player.dir[2] = True
+                player.state = 'move'
+            elif event.key == SDLK_LEFT:
+                player.dir[3] = True
+                player.state = 'move'
         elif event.type == SDL_KEYUP:
-            pass
+            if event.key == SDLK_DOWN:
+                player.dir[0] = False
+                player.state = 'idle'
+            elif event.key == SDLK_UP:
+                player.dir[1] = False
+                player.state = 'idle'
+            elif event.key == SDLK_RIGHT:
+                player.dir[2] = False
+                player.state = 'idle'
+            elif event.key == SDLK_LEFT:
+                player.dir[3] = False
+                player.state = 'idle'
     
 
 def update_world():
@@ -33,8 +48,10 @@ def update_world():
 
 def render_world():
     clear_canvas()
+    
     for o in world:
         o.draw()
+    
     update_canvas()
     pass
 
@@ -60,7 +77,7 @@ def main():
         handle_events()
         update_world()
         render_world()
-    delay(0.05)
+        delay(0.05)
     
     close_canvas()
     pass
