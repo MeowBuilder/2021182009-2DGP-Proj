@@ -39,7 +39,11 @@ def handle_events():
                     player.state = 'idle'
         elif event.type == SDL_MOUSEBUTTONDOWN:
             if event.button == SDL_BUTTON_LEFT:
-                player.state = 'attack'
+                if player.state == 'attack':
+                    player.state = 'attack_2'
+                else:
+                    player.frame = 0
+                    player.state = 'attack'
     
 
 def update_world():
@@ -75,7 +79,7 @@ def reset_world():
 
 # main
 def main():
-    open_canvas()
+    open_canvas(1920,1080,full=False)
     reset_world()
     
     update_world()
