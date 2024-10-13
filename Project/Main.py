@@ -24,6 +24,8 @@ def handle_events():
             elif event.key == SDLK_a:
                 player.switch_dir(3)
                 player.switch_state('move')
+            elif event.key == SDLK_LSHIFT:
+                player.switch_state('dash')
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_s:
                 if player.dir[0]:
