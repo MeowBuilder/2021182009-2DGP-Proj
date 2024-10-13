@@ -11,6 +11,7 @@ class Player:
         self.speed = 5
         self.state = 'attack' # idle / move / dash / attack
         self.attack_side = 0
+        self.HP = 5
     def update(self):
         if self.state == 'move' or self.state == 'dash':
             if self.dir[0]:

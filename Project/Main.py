@@ -1,5 +1,6 @@
 from pico2d import *
 from Player import *
+from UI import *
 import threading
 
 # func
@@ -12,6 +13,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 running = False
+            elif event.key == SDLK_m: # HP 닳기 확인용
+                player.HP -= 1
             elif event.key == SDLK_s:
                 player.switch_dir(0)
                 player.switch_state('move')
@@ -28,16 +31,16 @@ def handle_events():
                 player.switch_state('dash')
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_s:
-                if player.dir[0]:
+                if player.dir[0] and player.state == 'move':
                     player.switch_state('idle')
             elif event.key == SDLK_w:
-                if player.dir[1]:
+                if player.dir[1] and player.state == 'move':
                     player.switch_state('idle')
             elif event.key == SDLK_d:
-                if player.dir[2]:
+                if player.dir[2] and player.state == 'move':
                     player.switch_state('idle')
             elif event.key == SDLK_a:
-                if player.dir[3]:
+                if player.dir[3] and player.state == 'move':
                     player.switch_state('idle')
         elif event.type == SDL_MOUSEBUTTONDOWN:
             if event.button == SDL_BUTTON_LEFT:
@@ -65,21 +68,25 @@ def render_world():
     
     for o in world:
         o.draw()
+    playerUI.draw(player)
     
     update_canvas()
     pass
 
 # init
 def reset_world():
+    global world
     global running
     global player
-    global world
+    global playerUI
     
     running = True
     world = []
     
     player = Player()
     world.append(player)
+    
+    playerUI = Player_HP()
     pass
 
 # main
