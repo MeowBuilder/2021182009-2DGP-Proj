@@ -47,10 +47,8 @@ class Player:
         self.dir[dir_index] = True
         
     def switch_state(self,state):
-        if self.state == 'attack_2':
+        if self.state == 'attack_2' or self.state == 'dash':
             return
-        elif self.state == 'dash':
-            self.speed -= 10
             
         self.state = state
         
@@ -154,5 +152,6 @@ def draw_dash(self):
     self.frame = self.frame + 1
     
     if self.frame == 3:
-        self.switch_state('move')
+        self.state = 'move'
+        self.speed -= 10
         self.frame = 0
