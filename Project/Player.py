@@ -5,11 +5,12 @@ class Player:
         self.movement_sprite = [load_image('./Asset/Character/Front Movement.png'),load_image('./Asset/Character/Back Movement.png'),load_image('./Asset/Character/Side Movement.png')]
         self.attack_sprite = [load_image('./Asset/Character/Front ConsecutiveSlash.png'),load_image('./Asset/Character/Back ConsecutiveSlash.png'),load_image('./Asset/Character/Side ConsecutiveSlash.png')]
         self.dash_sprite = [load_image('./Asset/Character/Front DashnRoll.png'),load_image('./Asset/Character/Back Dash.png'),load_image('./Asset/Character/Side Dash.png')]
+        self.sprite = [self.movement_sprite,self.attack_sprite,self.dash_sprite]
         self.frame = 0
         self.x,self.y = 400,300
         self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
         self.speed = 5
-        self.state = 'attack' # idle / move / dash / attack
+        self.state = 'idle' # idle / move / dash / attack
         self.attack_side = 0
         self.HP = 5
     def update(self):
@@ -55,7 +56,12 @@ class Player:
         if state == 'dash':
             self.frame = 0
             self.speed += 10
-        
+
+
+def draw(self):
+    if self.state is 'idle': sprite_y = 64
+    else : sprite_y = 0
+    # W.I.P
         
 def draw_move(self):
     if self.dir[0]:
