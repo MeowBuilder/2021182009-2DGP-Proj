@@ -1,6 +1,7 @@
 from pico2d import *
 from Player import *
 from UI import *
+from Boss import *
 import threading
 
 # func
@@ -43,12 +44,16 @@ def reset_world():
     global running
     global player
     global playerUI
+    global boss_1
     
     running = True
     world = []
     
     player = Player()
     world.append(player)
+    
+    boss_1 = Boss()
+    world.append(boss_1)
     
     playerUI = Player_HP()
     pass
