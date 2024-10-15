@@ -1,163 +1,244 @@
 from pico2d import *
+import State_Machine
 
 class Player:
     def __init__(self):
         self.movement_sprite = [load_image('./Asset/Character/Front Movement.png'),load_image('./Asset/Character/Back Movement.png'),load_image('./Asset/Character/Side Movement.png')]
         self.attack_sprite = [load_image('./Asset/Character/Front ConsecutiveSlash.png'),load_image('./Asset/Character/Back ConsecutiveSlash.png'),load_image('./Asset/Character/Side ConsecutiveSlash.png')]
         self.dash_sprite = [load_image('./Asset/Character/Front DashnRoll.png'),load_image('./Asset/Character/Back Dash.png'),load_image('./Asset/Character/Side Dash.png')]
-        self.sprite = [self.movement_sprite,self.attack_sprite,self.dash_sprite]
         self.frame = 0
+        
         self.x,self.y = 400,300
+        
         self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
         self.speed = 5
-        self.state = 'idle' # idle / move / dash / attack
+        
+        self.state_machine = State_Machine.StateMachine(self)
+        self.state_machine.start(Idle)
+        
         self.attack_side = 0
         self.HP = 5
     def update(self):
-        if self.state == 'move' or self.state == 'dash':
-            if self.dir[0]:
-                self.y -= self.speed
-                pass
-            if self.dir[1]:
-                self.y += self.speed
-                pass
-            if self.dir[2]:
-                self.x += self.speed
-                pass
-            if self.dir[3]:
-                self.x -= self.speed
-                pass
+        self.state_machine.update()
             
     def draw(self):
-        if self.state == 'move':
-            draw_move(self)
-        elif self.state == 'idle':
-            draw_idle(self)
-        elif self.state == 'attack':
-            draw_attack(self)
-        elif self.state == 'attack_2':
-            draw_attack_2(self)
-        elif self.state == 'dash':
-            draw_dash(self)
+        self.state_machine.draw()
 
     def switch_dir(self,dir_index):
-        if self.state == 'attack_2':
+        if self.state_machine.cur_state == Attack_2 or self.state_machine.cur_state == Dash:
             return
+        
         self.frame = 0
         self.dir = [False,False,False,False]
         self.dir[dir_index] = True
         
-    def switch_state(self,state):
-        if self.state == 'attack_2' or self.state == 'dash':
+    def switch_state(self, state):
+        if self.state_machine.cur_state == Attack_2 or self.state_machine.cur_state == Dash:
             return
-            
-        self.state = state
         
-        if state == 'dash':
-            self.frame = 0
-            self.speed += 10
+        self.state_machine.start(state)
 
 
-def draw(self):
-    if self.state is 'idle': sprite_y = 64
-    else : sprite_y = 0
-    # W.I.P
         
-def draw_move(self):
-    if self.dir[0]:
-        self.movement_sprite[0].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[1]:
-        self.movement_sprite[1].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[2]:
-        self.movement_sprite[2].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[3]:
-        self.movement_sprite[2].clip_composite_draw(self.frame*64,0,64,64,0,'h',self.x,self.y,128,128)
-        pass
-    self.frame = (self.frame + 1) % 6
-    
-def draw_idle(self):
-    if self.dir[0]:
-        self.movement_sprite[0].clip_draw(self.frame*64,64,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[1]:
-        self.movement_sprite[1].clip_draw(self.frame*64,64,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[2]:
-        self.movement_sprite[2].clip_draw(self.frame*64,64,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[3]:
-        self.movement_sprite[2].clip_composite_draw(self.frame*64,64,64,64,0,'h',self.x,self.y,128,128)
-        pass
-    self.frame = (self.frame + 1) % 6
-    
-def draw_attack(self):
-    if self.dir[0]:
-        self.attack_sprite[0].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[1]:
-        self.attack_sprite[1].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[2]:
-        self.attack_sprite[2].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[3]:
-        self.attack_sprite[2].clip_composite_draw(self.frame*64,0,64,64,0,'h',self.x,self.y,128,128)
+class Idle:
+    @staticmethod
+    def enter(player):
         pass
     
-    self.frame = self.frame + 1
+    @staticmethod
+    def exit(player):
+        pass
     
-    if self.frame == 14:
-        if self.attack_side == 0:
-            self.frame = 0
-            self.state = 'idle'
-        elif self.attack_side == 1:
-            self.state = 'attack_2'
+    @staticmethod
+    def do(player):
+        pass
+    
+    @staticmethod
+    def draw(player):
+        if player.dir[0]:
+            player.movement_sprite[0].clip_draw(player.frame*64,64,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[1]:
+            player.movement_sprite[1].clip_draw(player.frame*64,64,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[2]:
+            player.movement_sprite[2].clip_draw(player.frame*64,64,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[3]:
+            player.movement_sprite[2].clip_composite_draw(player.frame*64,64,64,64,0,'h',player.x,player.y,128,128)
+            pass
+        player.frame = (player.frame + 1) % 6
+    
+    
+class Move:
+    @staticmethod
+    def enter(player):
+        pass
+    
+    @staticmethod
+    def exit(player):
+        pass
+    
+    @staticmethod
+    def do(player):
+        if player.dir[0]:
+            player.y -= player.speed
+            pass
+        if player.dir[1]:
+            player.y += player.speed
+            pass
+        if player.dir[2]:
+            player.x += player.speed
+            pass
+        if player.dir[3]:
+            player.x -= player.speed
+            pass
+    
+    @staticmethod
+    def draw(player):
+        if player.dir[0]:
+            player.movement_sprite[0].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[1]:
+            player.movement_sprite[1].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[2]:
+            player.movement_sprite[2].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[3]:
+            player.movement_sprite[2].clip_composite_draw(player.frame*64,0,64,64,0,'h',player.x,player.y,128,128)
+            pass
+        player.frame = (player.frame + 1) % 6
         
-def draw_attack_2(self):
-    if self.dir[0]:
-        self.attack_sprite[0].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[1]:
-        self.attack_sprite[1].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[2]:
-        self.attack_sprite[2].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[3]:
-        self.attack_sprite[2].clip_composite_draw(self.frame*64,0,64,64,0,'h',self.x,self.y,128,128)
+class Attack_1:
+    @staticmethod
+    def enter(player):
         pass
     
-    self.frame = self.frame + 1
+    @staticmethod
+    def exit(player):
+        pass
     
-    if self.frame == 21:
-        if self.attack_side == 1:
-            self.state = 'idle'
-            self.frame = 0
-        elif self.attack_side == 2:
-            self.attack_side = 0
-            self.state = 'attack'
-            self.frame = 5
+    @staticmethod
+    def do(player):
+        pass
+    
+    @staticmethod
+    def draw(player):
+        if player.dir[0]:
+            player.attack_sprite[0].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[1]:
+            player.attack_sprite[1].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[2]:
+            player.attack_sprite[2].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[3]:
+            player.attack_sprite[2].clip_composite_draw(player.frame*64,0,64,64,0,'h',player.x,player.y,128,128)
+            pass
         
+        player.frame = player.frame + 1
         
-def draw_dash(self):
-    if self.dir[0]:
-        self.dash_sprite[0].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
+        if player.frame == 14:
+            if player.attack_side == 0:
+                player.frame = 0
+                player.state_machine.start(Idle)
+                player.state = 'idle'
+            elif player.attack_side == 1:
+                player.state_machine.start(Attack_2)
+                player.state = 'attack_2'
+                
+
+class Attack_2:
+    @staticmethod
+    def enter(player):
         pass
-    elif self.dir[1]:
-        self.dash_sprite[1].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[2]:
-        self.dash_sprite[2].clip_draw(self.frame*64,0,64,64,self.x,self.y,128,128)
-        pass
-    elif self.dir[3]:
-        self.dash_sprite[2].clip_composite_draw(self.frame*64,0,64,64,0,'h',self.x,self.y,128,128)
-        pass
-    self.frame = self.frame + 1
     
-    if self.frame == 3:
-        self.state = 'move'
-        self.speed -= 10
-        self.frame = 0
+    @staticmethod
+    def exit(player):
+        pass
+    
+    @staticmethod
+    def do(player):
+        pass
+    
+    @staticmethod
+    def draw(player):
+        if player.dir[0]:
+            player.attack_sprite[0].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[1]:
+            player.attack_sprite[1].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[2]:
+            player.attack_sprite[2].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[3]:
+            player.attack_sprite[2].clip_composite_draw(player.frame*64,0,64,64,0,'h',player.x,player.y,128,128)
+            pass
+        
+        player.frame = player.frame + 1
+        
+        if player.frame == 21:
+            if player.attack_side == 1:
+                player.state_machine.start(Idle)
+                player.state = 'idle'
+                player.frame = 0
+            elif player.attack_side == 2:
+                player.attack_side = 0
+                player.state_machine.start(Attack_1)
+                player.state = 'attack'
+                player.frame = 5
+                
+                
+                
+class Dash:
+    @staticmethod
+    def enter(player):
+        player.frame = 0
+        player.speed += 10
+        pass
+    
+    @staticmethod
+    def exit(player):
+        player.speed -= 10
+        player.frame = 0
+        pass
+    
+    @staticmethod
+    def do(player):
+        if player.dir[0]:
+            player.y -= player.speed
+            pass
+        if player.dir[1]:
+            player.y += player.speed
+            pass
+        if player.dir[2]:
+            player.x += player.speed
+            pass
+        if player.dir[3]:
+            player.x -= player.speed
+            pass
+    
+    @staticmethod
+    def draw(player):
+        if player.dir[0]:
+            player.dash_sprite[0].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+        elif player.dir[1]:
+            player.dash_sprite[1].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[2]:
+            player.dash_sprite[2].clip_draw(player.frame*64,0,64,64,player.x,player.y,128,128)
+            pass
+        elif player.dir[3]:
+            player.dash_sprite[2].clip_composite_draw(player.frame*64,0,64,64,0,'h',player.x,player.y,128,128)
+            pass
+        player.frame = player.frame + 1
+        
+        if player.frame == 3:
+            player.state_machine.start(Move)
+            player.state = 'move'      
+                
+                
+                   
