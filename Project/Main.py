@@ -52,7 +52,7 @@ def reset_world():
     player = Player()
     world.append(player)
     
-    boss_1 = Boss()
+    boss_1 = Boss(player)
     world.append(boss_1)
     
     playerUI = Player_HP()
