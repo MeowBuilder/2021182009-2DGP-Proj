@@ -2,6 +2,7 @@ from pico2d import *
 from Player import *
 from UI import *
 from Boss import *
+import Map
 import threading
 
 # func
@@ -45,9 +46,13 @@ def reset_world():
     global player
     global playerUI
     global boss_1
+    global worldmap
     
     running = True
     world = []
+    
+    worldmap = Map.Map()
+    world.append(worldmap)
     
     player = Player()
     world.append(player)
@@ -60,7 +65,7 @@ def reset_world():
 
 # main
 def main():
-    open_canvas(1920,1080,full=False)
+    open_canvas(1280,720,full=False)
     reset_world()
     
     update_world()
