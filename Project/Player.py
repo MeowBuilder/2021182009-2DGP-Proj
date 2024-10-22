@@ -9,6 +9,7 @@ class Player:
         self.frame = 0
         
         self.x,self.y = 400,300
+        self.world_x, self.world_y = 640,360
         
         self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
         self.speed = 5
@@ -120,10 +121,16 @@ class Move:
     @staticmethod
     def do(player):
         if player.dir[0]:
-            player.y -= player.speed
+            if(player.world_y - 180 - player.speed) >= 0:
+                player.world_y -= player.speed
+            else:
+                player.y -= player.speed
             pass
         if player.dir[1]:
-            player.y += player.speed
+            if(player.world_y + 180 + player.speed) <= 720:
+                player.world_y += player.speed
+            else:
+                player.y += player.speed
             pass
         if player.dir[2]:
             player.x += player.speed
