@@ -1,15 +1,18 @@
 from pico2d import *
 
 class Map:
-    def __init__(self):
+    def __init__(self,Player):
         self.size = (1280,720)
         self.map = load_image("./Asset/Map/Map_test.png")
-    
+        self.x,self.y = 400,300
+        self.player = Player
     def update(self):
+        self.x = self.player.x
+        self.y = self.player.y
         pass
     
     def draw(self):
-        self.map.draw(1280/2,720/2,1280,720)
+        self.map.clip_draw(400,300,640,360,640,360,1280,720)
         pass
     
     

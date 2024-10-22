@@ -51,10 +51,10 @@ def reset_world():
     running = True
     world = []
     
-    worldmap = Map.Map()
+    player = Player()
+    worldmap = Map.Map(player)
     world.append(worldmap)
     
-    player = Player()
     world.append(player)
     
     boss_1 = Boss(player)
