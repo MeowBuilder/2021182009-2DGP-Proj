@@ -11,7 +11,7 @@ class Boss:
         
         self.HP = 10
         self.x, self.y = 640, 360
-        self.speed = 1
+        self.speed = 2
         self.cur_pattern = Idle
         self.next_pattern = Attack
         self.patterns = [Attack,Skill]
@@ -36,9 +36,9 @@ class Boss:
         pass
     
     def move_to_player(self,Player):
-        self.dir = ((Player.x-self.x)/max(1,abs(Player.x-self.x)))
-        self.x += ((Player.x-self.x)/max(1,abs(Player.x-self.x))) * self.speed
-        self.y += ((Player.y-self.y)/max(1,abs(Player.y-self.y))) * self.speed
+        self.dir = (((Player.world_x + Player.x)-self.x)/max(1,abs((Player.world_x + Player.x)-self.x)))
+        self.x += (((Player.world_x + Player.x)-self.x)/max(1,abs((Player.world_x + Player.x)-self.x))) * self.speed
+        self.y += (((Player.world_y + Player.y)-self.y)/max(1,abs((Player.world_y + Player.y)-self.y))) * self.speed
         pass
     
     
@@ -64,9 +64,9 @@ class Idle:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.idle_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.x,Boss.y,256,256)
+            Boss.idle_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.x - Boss.player.world_x,Boss.y - Boss.player.world_y,256,256)
         else:
-            Boss.idle_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.x,Boss.y,256,256)
+            Boss.idle_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.x - Boss.player.world_x,Boss.y - Boss.player.world_y,256,256)
         
 class Attack:
     @staticmethod
@@ -88,9 +88,9 @@ class Attack:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.x,Boss.y,256,256)
+            Boss.attack_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.x - Boss.player.world_x,Boss.y - Boss.player.world_y,256,256)
         else:
-            Boss.attack_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.x,Boss.y,256,256)
+            Boss.attack_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.x - Boss.player.world_x,Boss.y - Boss.player.world_y,256,256)
         
 class Skill:
     @staticmethod
@@ -112,6 +112,6 @@ class Skill:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.skill_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.x,Boss.y,256,256)
+            Boss.skill_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.x - Boss.player.world_x,Boss.y - Boss.player.world_y,256,256)
         else:
-            Boss.skill_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.x,Boss.y,256,256)
+            Boss.skill_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.x - Boss.player.world_x,Boss.y - Boss.player.world_y,256,256)

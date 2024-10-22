@@ -12,7 +12,7 @@ class Map:
         pass
     
     def draw(self):
-        self.map.clip_draw(self.player.world_x-320,self.player.world_y-180,640,360,640,360,1280,720)
+        self.map.clip_draw(self.player.world_x,self.player.world_y,640,360,640,360,1280,720)
         pass
     
     

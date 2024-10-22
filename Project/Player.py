@@ -8,7 +8,7 @@ class Player:
         self.dash_sprite = [load_image('./Asset/Character/Front DashnRoll.png'),load_image('./Asset/Character/Back Dash.png'),load_image('./Asset/Character/Side Dash.png')]
         self.frame = 0
         
-        self.x,self.y = 400,300
+        self.x,self.y = 640,360
         self.world_x, self.world_y = 640,360
         
         self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
@@ -121,22 +121,32 @@ class Move:
     @staticmethod
     def do(player):
         if player.dir[0]:
-            if(player.world_y - 180 - player.speed) >= 0:
+            if(player.world_y - player.speed) >= 0 and player.y <= 360:
+                player.y = 360
                 player.world_y -= player.speed
             else:
                 player.y -= player.speed
             pass
         if player.dir[1]:
-            if(player.world_y + 180 + player.speed) <= 720:
+            if(player.world_y + 360 + player.speed) <= 720 and player.y >= 360:
+                player.y = 360
                 player.world_y += player.speed
             else:
                 player.y += player.speed
             pass
         if player.dir[2]:
-            player.x += player.speed
+            if(player.world_x + 640 + player.speed) <= 1280 and player.x >= 640:
+                player.x = 640
+                player.world_x += player.speed
+            else:
+                player.x += player.speed
             pass
         if player.dir[3]:
-            player.x -= player.speed
+            if(player.world_x - player.speed) >= 0 and player.x <= 640:
+                player.x = 640
+                player.world_x -= player.speed
+            else:
+                player.x -= player.speed
             pass
         player.frame = (player.frame + 1) % 6
         
@@ -247,16 +257,32 @@ class Dash:
     @staticmethod
     def do(player):
         if player.dir[0]:
-            player.y -= player.speed
+            if(player.world_y - player.speed) >= 0 and player.y <= 360:
+                player.y = 360
+                player.world_y -= player.speed
+            else:
+                player.y -= player.speed
             pass
         if player.dir[1]:
-            player.y += player.speed
+            if(player.world_y + 360 + player.speed) <= 720 and player.y >= 360:
+                player.y = 360
+                player.world_y += player.speed
+            else:
+                player.y += player.speed
             pass
         if player.dir[2]:
-            player.x += player.speed
+            if(player.world_x + 640 + player.speed) <= 1280 and player.x >= 640:
+                player.x = 640
+                player.world_x += player.speed
+            else:
+                player.x += player.speed
             pass
         if player.dir[3]:
-            player.x -= player.speed
+            if(player.world_x - player.speed) >= 0 and player.x <= 640:
+                player.x = 640
+                player.world_x -= player.speed
+            else:
+                player.x -= player.speed
             pass
         
         player.frame = player.frame + 1
