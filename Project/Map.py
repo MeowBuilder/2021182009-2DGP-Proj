@@ -2,17 +2,17 @@ from pico2d import *
 
 class Map:
     def __init__(self,Player):
-        self.size = (1280,720)
         self.map = load_image("./Asset/Map/Map_test.png")
-        self.x,self.y = 400,300
+        self.cw,self.ch = get_canvas_width(),get_canvas_height()
+        self.w, self.h = self.map.w,self.map.h
         self.player = Player
     def update(self):
-        self.x = self.player.x
-        self.y = self.player.y
+        self.window_left = clamp(0,int(self.player.x)-self.cw // 2,self.w - self.cw - 1)
+        self.window_bottom = clamp(0,int(self.player.y)-self.ch // 2,self.h - self.ch - 1)
         pass
     
     def draw(self):
-        self.map.clip_draw(self.player.world_x,self.player.world_y,640,360,640,360,1280,720)
+        self.map.clip_draw_to_origin(self.window_left,self.window_bottom,self.cw,self.ch,0,0)
         pass
     
     

@@ -51,8 +51,10 @@ def reset_world():
     running = True
     world = []
     
-    player = Player()
+    player = Player(None)
     worldmap = Map.Map(player)
+    player.cur_map = worldmap
+    
     world.append(worldmap)
     
     world.append(player)
@@ -65,7 +67,7 @@ def reset_world():
 
 # main
 def main():
-    open_canvas(1280,720,full=False)
+    open_canvas(800,600,full=False)
     reset_world()
     
     update_world()

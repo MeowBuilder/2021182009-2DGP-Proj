@@ -14,4 +14,4 @@ class Player_HP(UI):
     def __init__(self):
         super().__init__('Player_HP')
     def draw(self,Player):
-        self.image.clip_draw((5 - Player.HP) * 48,0,48,16,Player.x,Player.y + 48,96,32)
+        self.image.clip_draw((5 - Player.HP) * 48,0,48,16,Player.sx,Player.sy + 48,96,32)
