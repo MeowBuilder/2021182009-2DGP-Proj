@@ -80,8 +80,10 @@ class Player:
     def switch_state(self, state):
         if self.state_machine.cur_state == Attack_2 or self.state_machine.cur_state == Dash:
             return
-        
         self.state_machine.start(state)
+
+    def get_attacked(self):
+        self.HP -= 1
 
 
 class Idle:

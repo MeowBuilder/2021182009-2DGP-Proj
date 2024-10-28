@@ -1,3 +1,4 @@
+import math
 from pico2d import *
 import random
 import State_Machine
@@ -85,7 +86,9 @@ class Attack:
     def do(Boss):
         Boss.frame = (Boss.frame + 1)
         if 2 < Boss.frame < 9:
-            pass
+            if math.sqrt((Boss.x - Boss.player.x) ** 2 + (Boss.y - Boss.player.y) ** 2) < 10:
+                Boss.player.get_attacked()
+
         if Boss.frame == 13:
             Boss.state_machine.start(Idle)
     
