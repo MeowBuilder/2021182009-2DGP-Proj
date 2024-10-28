@@ -84,6 +84,8 @@ class Attack:
     @staticmethod
     def do(Boss):
         Boss.frame = (Boss.frame + 1)
+        if 2 < Boss.frame < 9:
+            pass
         if Boss.frame == 13:
             Boss.state_machine.start(Idle)
     
