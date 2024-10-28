@@ -16,7 +16,7 @@ class Boss:
         self.speed = 2
         self.cur_pattern = Idle
         self.next_pattern = Attack
-        self.patterns = [Attack,Skill]
+        self.patterns = [Attack]
         self.idle_time = 0
         self.dir = 0
         
@@ -80,13 +80,14 @@ class Attack:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
+        Boss.player.is_invincibility = False
         pass
     
     @staticmethod
     def do(Boss):
         Boss.frame = (Boss.frame + 1)
-        if 2 < Boss.frame < 9:
-            if math.sqrt((Boss.x - Boss.player.x) ** 2 + (Boss.y - Boss.player.y) ** 2) < 10:
+        if 5 < Boss.frame < 9:
+            if math.sqrt((Boss.x - Boss.player.x) ** 2 + (Boss.y - Boss.player.y) ** 2) < 128:
                 Boss.player.get_attacked()
 
         if Boss.frame == 13:

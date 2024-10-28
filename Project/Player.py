@@ -13,11 +13,12 @@ class Player:
         
         self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
         self.speed = 5
-        self.Map = cur_map
+        self.cur_map = cur_map
         
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
-        
+
+        self.is_invincibility = False
         self.attack_side = 0
         self.HP = 5
     def update(self):
@@ -45,6 +46,8 @@ class Player:
                 self.switch_state(Move)
             elif event.key == SDLK_LSHIFT:
                 self.switch_state(Dash)
+            elif event.key == SDLK_h:
+                self.HP = 5
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_s:
                 if self.dir[0] and self.state_machine.cur_state == Move:
@@ -83,7 +86,10 @@ class Player:
         self.state_machine.start(state)
 
     def get_attacked(self):
-        self.HP -= 1
+        if not self.is_invincibility:
+            self.HP -= 1
+            self.is_invincibility = True
+            pass
 
 
 class Idle:
@@ -235,12 +241,14 @@ class Attack_2:
 class Dash:
     @staticmethod
     def enter(player):
+        player.is_invincibility = True
         player.frame = 0
-        player.speed += 10
+        player.speed += 20
         
     @staticmethod
     def exit(player):
-        player.speed -= 10
+        player.is_invincibility = False
+        player.speed -= 20
         player.frame = 0
         pass
     

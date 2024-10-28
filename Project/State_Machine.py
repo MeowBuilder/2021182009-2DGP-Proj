@@ -13,3 +13,4 @@ class StateMachine:
         
     def draw(self):
         self.cur_state.draw(self.o)
+
