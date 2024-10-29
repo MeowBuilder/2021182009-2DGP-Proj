@@ -1,9 +1,5 @@
-from turtledemo.penrose import start
-
 from pico2d import *
 import State_Machine
-from Project.State_Machine import start_event, right_down, left_up, right_up, left_down
-
 
 class Player:
     def __init__(self,cur_map):
@@ -14,23 +10,13 @@ class Player:
         
         self.x,self.y = 640,360
         self.sx,self.sy = get_canvas_width() // 2,get_canvas_height() // 2
-
-        self.dir = 1 # 1:앞   2:뒤  3:오른쪽    4:왼쪽
-        #self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
+        
+        self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
         self.speed = 5
         self.cur_map = cur_map
         
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
-        self.state_machine.set_transitions(
-            {
-                Idle : {},
-                Move : {},
-                Attack_1 : {},
-                Attack_2 : {},
-                Dash : {}
-            }
-        )
 
         self.is_invincibility = False
         self.attack_side = 0
@@ -45,60 +31,59 @@ class Player:
         self.state_machine.draw()
         
     def handle_events(self,event):
-        self.state_machine.add_event(('INPUT',event))
-        # if event.type == SDL_KEYDOWN:
-        #     if event.key == SDLK_s:
-        #         self.switch_dir(0)
-        #         self.switch_state(Move)
-        #     elif event.key == SDLK_w:
-        #         self.switch_dir(1)
-        #         self.switch_state(Move)
-        #     elif event.key == SDLK_d:
-        #         self.switch_dir(2)
-        #         self.switch_state(Move)
-        #     elif event.key == SDLK_a:
-        #         self.switch_dir(3)
-        #         self.switch_state(Move)
-        #     elif event.key == SDLK_LSHIFT:
-        #         self.switch_state(Dash)
-        #     elif event.key == SDLK_h:
-        #         self.HP = 5
-        # elif event.type == SDL_KEYUP:
-        #     if event.key == SDLK_s:
-        #         if self.dir[0] and self.state_machine.cur_state == Move:
-        #             self.switch_state(Idle)
-        #     elif event.key == SDLK_w:
-        #         if self.dir[1] and self.state_machine.cur_state == Move:
-        #             self.switch_state(Idle)
-        #     elif event.key == SDLK_d:
-        #         if self.dir[2] and self.state_machine.cur_state == Move:
-        #             self.switch_state(Idle)
-        #     elif event.key == SDLK_a:
-        #         if self.dir[3] and self.state_machine.cur_state == Move:
-        #             self.switch_state(Idle)
-        # elif event.type == SDL_MOUSEBUTTONDOWN:
-        #     if event.button == SDL_BUTTON_LEFT:
-        #         if self.state_machine.cur_state == Attack_1:
-        #             self.attack_side = 1
-        #         elif self.state_machine.cur_state == Attack_2:
-        #             self.attack_side = 2
-        #         else:
-        #             self.frame = 0
-        #             self.attack_side = 0
-        #             self.switch_state(Attack_1)
+        if event.type == SDL_KEYDOWN:
+            if event.key == SDLK_s:
+                self.switch_dir(0)
+                self.switch_state(Move)
+            elif event.key == SDLK_w:
+                self.switch_dir(1)
+                self.switch_state(Move)
+            elif event.key == SDLK_d:
+                self.switch_dir(2)
+                self.switch_state(Move)
+            elif event.key == SDLK_a:
+                self.switch_dir(3)
+                self.switch_state(Move)
+            elif event.key == SDLK_LSHIFT:
+                self.switch_state(Dash)
+            elif event.key == SDLK_h:
+                self.HP = 5
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_s:
+                if self.dir[0] and self.state_machine.cur_state == Move:
+                    self.switch_state(Idle)
+            elif event.key == SDLK_w:
+                if self.dir[1] and self.state_machine.cur_state == Move:
+                    self.switch_state(Idle)
+            elif event.key == SDLK_d:
+                if self.dir[2] and self.state_machine.cur_state == Move:
+                    self.switch_state(Idle)
+            elif event.key == SDLK_a:
+                if self.dir[3] and self.state_machine.cur_state == Move:
+                    self.switch_state(Idle)
+        elif event.type == SDL_MOUSEBUTTONDOWN:
+            if event.button == SDL_BUTTON_LEFT:
+                if self.state_machine.cur_state == Attack_1:
+                    self.attack_side = 1
+                elif self.state_machine.cur_state == Attack_2:
+                    self.attack_side = 2
+                else:
+                    self.frame = 0
+                    self.attack_side = 0
+                    self.switch_state(Attack_1)
 
-    # def switch_dir(self,dir_index):
-    #     if self.state_machine.cur_state == Attack_2 or self.state_machine.cur_state == Dash:
-    #         return
-    #
-    #     self.frame = 0
-    #     self.dir = [False,False,False,False]
-    #     self.dir[dir_index] = True
-    #
-    # def switch_state(self, state):
-    #     if self.state_machine.cur_state == Attack_2 or self.state_machine.cur_state == Dash:
-    #         return
-    #     self.state_machine.start(state)
+    def switch_dir(self,dir_index):
+        if self.state_machine.cur_state == Attack_2 or self.state_machine.cur_state == Dash:
+            return
+        
+        self.frame = 0
+        self.dir = [False,False,False,False]
+        self.dir[dir_index] = True
+        
+    def switch_state(self, state):
+        if self.state_machine.cur_state == Attack_2 or self.state_machine.cur_state == Dash:
+            return
+        self.state_machine.start(state)
 
     def get_attacked(self):
         if not self.is_invincibility:
@@ -109,17 +94,11 @@ class Player:
 
 class Idle:
     @staticmethod
-    def enter(player,e):
-        if start_event(e):
-            pass
-        elif right_down(e) or left_up(e):
-            pass
-        elif left_down(e) or right_up(e):
-            pass
+    def enter(player):
         pass
     
     @staticmethod
-    def exit(player,e):
+    def exit(player):
         pass
     
     @staticmethod
@@ -189,7 +168,6 @@ class Attack_1:
     
     @staticmethod
     def exit(player):
-        player.Boss.is_invincibility = False
         pass
     
     @staticmethod
@@ -203,10 +181,6 @@ class Attack_1:
             elif player.attack_side == 1:
                 player.state_machine.start(Attack_2)
                 player.state = 'attack_2'
-
-        if 5 < player.frame < 9:
-            if math.sqrt((player.x - player.Boss.x) ** 2 + (player.y - player.Boss.y) ** 2) < 64:
-                player.Boss.get_attacked()
         pass
     
     @staticmethod
