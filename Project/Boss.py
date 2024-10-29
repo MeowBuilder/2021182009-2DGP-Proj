@@ -19,7 +19,8 @@ class Boss:
         self.patterns = [Attack]
         self.idle_time = 0
         self.dir = 0
-        
+        self.is_invincibility = False
+
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
         
@@ -43,7 +44,14 @@ class Boss:
         self.x += ((Player.x-self.x)/max(1,abs(Player.x-self.x))) * self.speed
         self.y += ((Player.y-self.y)/max(1,abs(Player.y-self.y))) * self.speed
         pass
-    
+
+    def get_attacked(self):
+        if not self.is_invincibility:
+            print(f'BOSS HP : {self.HP}')
+            self.HP -= 1
+            self.is_invincibility = True
+            pass
+        pass
     
 class Idle:
     @staticmethod

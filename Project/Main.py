@@ -61,7 +61,8 @@ def reset_world():
     
     boss_1 = Boss(player)
     world.append(boss_1)
-    
+    player.Boss = boss_1
+
     playerUI = Player_HP()
     pass
 
