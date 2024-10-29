@@ -54,13 +54,14 @@ def reset_world():
     player = Player(None)
     worldmap = Map.Map(player)
     player.cur_map = worldmap
-    
+
     world.append(worldmap)
     
     world.append(player)
     
     boss_1 = Boss(player)
     world.append(boss_1)
+    player.Boss = boss_1
     
     playerUI = Player_HP()
     pass
