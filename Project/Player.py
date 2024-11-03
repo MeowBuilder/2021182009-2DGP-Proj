@@ -210,6 +210,7 @@ class Attack_2:
     
     @staticmethod
     def exit(player):
+        player.Boss.is_invincibility = False
         pass
     
     @staticmethod
@@ -226,6 +227,10 @@ class Attack_2:
                 player.state_machine.start(Attack_1)
                 player.state = 'attack'
                 player.frame = 5
+                
+        if 10 < player.frame < 18:
+            if math.sqrt((player.x - player.Boss.x) ** 2 + (player.y - player.Boss.y) ** 2) < 64:
+                player.Boss.get_attacked()     
         pass
     
     @staticmethod

@@ -8,6 +8,7 @@ class Boss:
         self.idle_sprite = load_image('./Asset/Boss/idle.png')
         self.attack_sprite = load_image('./Asset/Boss/attacking.png')
         self.skill_sprite = load_image('./Asset/Boss/skill1.png')
+        self.death_sprite = load_image('./Asset/Boss/death.png')
         self.frame = 0
         
         self.HP = 10
@@ -16,11 +17,13 @@ class Boss:
         self.speed = 2
         self.cur_pattern = Idle
         self.next_pattern = Attack
-        self.patterns = [Attack]
+        self.patterns = [Attack,Skill]
         self.idle_time = 0
         self.dir = 0
         self.is_invincibility = False
 
+        self.dead = False
+        
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
         
@@ -28,12 +31,14 @@ class Boss:
         pass
 
     def update(self):
-        self.state_machine.update()
-        self.move_to_player(self.player)
+        if not self.dead:
+            self.state_machine.update()
+            self.move_to_player(self.player)
         
     def draw(self):
-        self.sx,self.sy = self.x - self.player.cur_map.window_left, self.y - self.player.cur_map.window_bottom
-        self.state_machine.draw()
+        if not self.dead:
+            self.sx,self.sy = self.x - self.player.cur_map.window_left, self.y - self.player.cur_map.window_bottom
+            self.state_machine.draw()
         
     def set_random_pattern(self):
         self.next_pattern = random.choice(self.patterns)
@@ -46,12 +51,18 @@ class Boss:
         pass
 
     def get_attacked(self):
-        if not self.is_invincibility:
+        if not self.is_invincibility and not self.dead:
             print(f'BOSS HP : {self.HP}')
             self.HP -= 1
             self.is_invincibility = True
+            
+            if self.HP <= 0:
+                self.state_machine.start(Die)
             pass
         pass
+    
+    def __del__(self):
+        print('Boss 소멸')
     
 class Idle:
     @staticmethod
@@ -117,11 +128,16 @@ class Skill:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
+        Boss.player.is_invincibility = False
         pass
     
     @staticmethod
     def do(Boss):
         Boss.frame = (Boss.frame + 1)
+        if 4 < Boss.frame < 7:
+            if math.sqrt((Boss.x - Boss.player.x) ** 2 + (Boss.y - Boss.player.y) ** 2) < 128:
+                Boss.player.get_attacked()
+
         if Boss.frame == 12:
             Boss.state_machine.start(Idle)
     
@@ -131,3 +147,28 @@ class Skill:
             Boss.skill_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.sx ,Boss.sy ,256,256)
         else:
             Boss.skill_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.sx ,Boss.sy ,256,256)
+            
+            
+class Die:
+    @staticmethod
+    def enter(Boss):
+        Boss.frame = 0
+        pass
+    
+    @staticmethod
+    def exit(Boss):
+        Boss.frame = 0
+        pass
+    
+    @staticmethod
+    def do(Boss):
+        Boss.frame = (Boss.frame + 1)
+        if Boss.frame == 19:
+            Boss.dead = True
+    
+    @staticmethod
+    def draw(Boss):
+        if Boss.dir < 0:
+            Boss.death_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.sx ,Boss.sy ,256,256)
+        else:
+            Boss.death_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.sx ,Boss.sy ,256,256)
