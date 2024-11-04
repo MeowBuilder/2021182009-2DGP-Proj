@@ -2,6 +2,7 @@ class StateMachine:
     def __init__(self,o):
         self.o = o
         self.cur_state = None
+        
     def start(self, state):
         if self.cur_state != None:
             self.cur_state.exit(self.o)
