@@ -1,4 +1,6 @@
 import math
+from itertools import filterfalse
+
 from pico2d import *
 import random
 import State_Machine
@@ -6,8 +8,9 @@ import State_Machine
 class Boss:
     def __init__(self,Player):
         self.idle_sprite = load_image('./Asset/Boss/idle.png')
-        self.attack_sprite = load_image('./Asset/Boss/attacking.png')
-        self.skill_sprite = load_image('./Asset/Boss/skill1.png')
+        self.attack1_sprite = load_image('./Asset/Boss/attacking.png')
+        self.attack2_sprite = load_image('./Asset/Boss/skill1.png')
+        self.under50_sprite = load_image('./Asset/Boss/summon.png')
         self.death_sprite = load_image('./Asset/Boss/death.png')
         self.frame = 0
         
@@ -16,12 +19,13 @@ class Boss:
         self.sx, self.sy = 0,0
         self.speed = 2
         self.cur_pattern = Idle
-        self.next_pattern = Attack
-        self.patterns = [Attack,Skill]
+        self.next_pattern = Attack1
+        self.patterns = [Attack1,Attack2]
         self.idle_time = 0
         self.dir = 0
         self.is_invincibility = False
 
+        self.do_under50 = False
         self.dead = False
         
         self.state_machine = State_Machine.StateMachine(self)
@@ -33,7 +37,6 @@ class Boss:
     def update(self):
         if not self.dead:
             self.state_machine.update()
-            self.move_to_player(self.player)
         
     def draw(self):
         if not self.dead:
@@ -52,12 +55,15 @@ class Boss:
 
     def get_attacked(self):
         if not self.is_invincibility and not self.dead:
-            print(f'BOSS HP : {self.HP}')
             self.HP -= 1
             self.is_invincibility = True
+            print(f'BOSS HP : {self.HP}')
             
             if self.HP <= 0:
                 self.state_machine.start(Die)
+            elif self.HP <= 5 and not self.do_under50:
+                self.state_machine.start(under50_skill)
+                self.do_under50 = True
             pass
         pass
     
@@ -78,7 +84,8 @@ class Idle:
     def do(Boss):
         Boss.idle_time += 0.5
         Boss.frame = (Boss.frame + 1) % 8
-        
+
+        Boss.move_to_player(Boss.player)
         if Boss.idle_time >= 30:
             Boss.state_machine.start(Boss.next_pattern)
             Boss.set_random_pattern()
@@ -90,7 +97,7 @@ class Idle:
         else:
             Boss.idle_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.sx ,Boss.sy ,256,256)
         
-class Attack:
+class Attack1:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
@@ -115,11 +122,11 @@ class Attack:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.sx ,Boss.sy ,256,256)
+            Boss.attack1_sprite.clip_composite_draw(Boss.frame * 100, 0, 100, 100, 0, 'h', Boss.sx, Boss.sy, 256, 256)
         else:
-            Boss.attack_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.sx ,Boss.sy ,256,256)
+            Boss.attack1_sprite.clip_composite_draw(Boss.frame * 100, 0, 100, 100, 0, 'w', Boss.sx, Boss.sy, 256, 256)
         
-class Skill:
+class Attack2:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
@@ -144,10 +151,40 @@ class Skill:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.skill_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'h',Boss.sx ,Boss.sy ,256,256)
+            Boss.attack2_sprite.clip_composite_draw(Boss.frame * 100, 0, 100, 100, 0, 'h', Boss.sx, Boss.sy, 256, 256)
         else:
-            Boss.skill_sprite.clip_composite_draw(Boss.frame*100,0,100,100,0,'w',Boss.sx ,Boss.sy ,256,256)
-            
+            Boss.attack2_sprite.clip_composite_draw(Boss.frame * 100, 0, 100, 100, 0, 'w', Boss.sx, Boss.sy, 256, 256)
+
+
+class under50_skill:
+    @staticmethod
+    def enter(Boss):
+        print('enter under50')
+        Boss.frame = 0
+        Boss.player.is_invincibility = True
+        Boss.start_time = get_time()
+        pass
+
+    @staticmethod
+    def exit(Boss):
+        Boss.frame = 0
+        Boss.player.is_invincibility = False
+        pass
+
+    @staticmethod
+    def do(Boss):
+        if get_time() - Boss.start_time >= 1 and Boss.frame >= 4:
+            Boss.state_machine.start(Idle)
+        elif get_time() - Boss.start_time >= 1:
+            Boss.frame = (Boss.frame + 1)
+            Boss.start_time = get_time()
+
+    @staticmethod
+    def draw(Boss):
+        if Boss.dir < 0:
+            Boss.under50_sprite.clip_composite_draw(Boss.frame * 100, 0, 100, 100, 0, 'h', Boss.sx, Boss.sy, 256, 256)
+        else:
+            Boss.under50_sprite.clip_composite_draw(Boss.frame * 100, 0, 100, 100, 0, 'w', Boss.sx, Boss.sy, 256, 256)
             
 class Die:
     @staticmethod

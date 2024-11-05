@@ -191,16 +191,16 @@ class Attack_1:
     @staticmethod
     def draw(player):
         if player.dir[0]:
-            player.attack_sprite[0].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.attack_sprite[0].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[1]:
-            player.attack_sprite[1].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.attack_sprite[1].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[2]:
-            player.attack_sprite[2].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.attack_sprite[2].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[3]:
-            player.attack_sprite[2].clip_composite_draw(player.frame*64,0,64,64,0,'h',player.sx,player.sy,128,128)
+            player.attack_sprite[2].clip_composite_draw(player.frame * 64, 0, 64, 64, 0, 'h', player.sx, player.sy, 128, 128)
             pass
         
 class Attack_2:
@@ -236,16 +236,16 @@ class Attack_2:
     @staticmethod
     def draw(player):
         if player.dir[0]:
-            player.attack_sprite[0].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.attack_sprite[0].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[1]:
-            player.attack_sprite[1].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.attack_sprite[1].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[2]:
-            player.attack_sprite[2].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.attack_sprite[2].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[3]:
-            player.attack_sprite[2].clip_composite_draw(player.frame*64,0,64,64,0,'h',player.sx,player.sy,128,128)
+            player.attack_sprite[2].clip_composite_draw(player.frame * 64, 0, 64, 64, 0, 'h', player.sx, player.sy, 128, 128)
             pass
           
 class Dash:
