@@ -37,7 +37,7 @@ def init():
 
     game_world.add_object(worldmap,0)
     game_world.add_object(player,2)
-    #game_world.add_object(boss_1,1)
+    game_world.add_object(boss_1,1)
     game_world.add_object(playerUI,3)
 
     pass
