@@ -63,11 +63,13 @@ def reset_world():
     
     boss_1 = Boss(player)
     world.append(boss_1)
-    player.Boss = boss_1
 
     summon1 = summon(player)
     world.append(summon1)
-    
+
+    player.Enemy.append(boss_1)
+    player.Enemy.append(summon1)
+
     playerUI = Player_HP()
     pass
 

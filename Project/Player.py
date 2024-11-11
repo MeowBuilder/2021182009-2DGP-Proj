@@ -2,6 +2,7 @@ from pico2d import *
 import State_Machine
 
 class Player:
+    Enemy = []
     def __init__(self,cur_map):
         self.movement_sprite = [load_image('./Asset/Character/Front Movement.png'),load_image('./Asset/Character/Back Movement.png'),load_image('./Asset/Character/Side Movement.png')]
         self.attack_sprite = [load_image('./Asset/Character/Front ConsecutiveSlash.png'),load_image('./Asset/Character/Back ConsecutiveSlash.png'),load_image('./Asset/Character/Side ConsecutiveSlash.png')]
@@ -91,6 +92,12 @@ class Player:
             self.is_invincibility = True
             pass
 
+    def do_attack(self):
+        for enemy in self.Enemy:
+            if math.sqrt((self.x - enemy.x) ** 2 + (self.y - enemy.y) ** 2) < 64:
+                enemy.get_attacked()
+            pass
+
 
 class Idle:
     @staticmethod
@@ -168,7 +175,8 @@ class Attack_1:
     
     @staticmethod
     def exit(player):
-        player.Boss.is_invincibility = False
+        for enemy in player.Enemy:
+            enemy.is_invincibility = False
         pass
     
     @staticmethod
@@ -184,8 +192,7 @@ class Attack_1:
                 player.state = 'attack_2'
 
         if 5 < player.frame < 9:
-            if math.sqrt((player.x - player.Boss.x) ** 2 + (player.y - player.Boss.y) ** 2) < 64:
-                player.Boss.get_attacked()
+            player.do_attack()
         pass
     
     @staticmethod
@@ -210,7 +217,8 @@ class Attack_2:
     
     @staticmethod
     def exit(player):
-        player.Boss.is_invincibility = False
+        for enemy in player.Enemy:
+            enemy.is_invincibility = False
         pass
     
     @staticmethod
@@ -229,8 +237,8 @@ class Attack_2:
                 player.frame = 5
                 
         if 10 < player.frame < 18:
-            if math.sqrt((player.x - player.Boss.x) ** 2 + (player.y - player.Boss.y) ** 2) < 64:
-                player.Boss.get_attacked()     
+            player.do_attack()
+            pass
         pass
     
     @staticmethod
