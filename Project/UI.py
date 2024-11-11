@@ -4,21 +4,15 @@ class UI:
     def __init__(self,UI_name):
         self.image = load_image('./Asset/UI/'+UI_name+'.png')
         self.x, self.y = 0,0
-    def updatw(self):
+    def update(self):
         pass
     def draw(self):
         pass
 
         
 class Player_HP(UI):
-    def __init__(self):
+    def __init__(self,Player):
         super().__init__('Player_HP')
-    def draw(self,Player):
-        self.image.clip_draw((5 - Player.HP) * 48,0,48,16,Player.sx,Player.sy + 48,96,32)
-
-
-class Boss_HP(UI):
-    def __init__(self):
-        super().__init__('Boss_HP')
-    def draw(self,Boss):
-        pass
+        self.player = Player
+    def draw(self):
+        self.image.clip_draw((5 - self.player.HP) * 48,0,48,16,self.player.sx,self.player.sy + 48,96,32)
