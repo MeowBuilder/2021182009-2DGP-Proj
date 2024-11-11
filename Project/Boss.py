@@ -3,6 +3,9 @@ import math
 from pico2d import *
 import random
 import State_Machine
+import game_world
+from summon import summon
+
 
 class Boss:
     def __init__(self,Player):
@@ -29,7 +32,9 @@ class Boss:
         
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
-        
+
+        self.summoned = []
+
         self.player = Player
         pass
 
@@ -178,6 +183,9 @@ class under50_skill:
         elif get_time() - Boss.start_time >= 1:
             Boss.frame = (Boss.frame + 1)
             Boss.start_time = get_time()
+            newsummon = summon(Boss.player)
+            game_world.add_object(newsummon,1)
+            Boss.player.Enemy.append(newsummon)
 
     @staticmethod
     def draw(Boss):

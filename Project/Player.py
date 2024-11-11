@@ -1,5 +1,19 @@
 from pico2d import *
 import State_Machine
+import game_framework
+
+# Run Speed
+PIXEL_PER_METER = (64.0 / 1.0)
+RUN_SPEED_KMPH = 10.0 # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# Action Speed
+TIME_PER_ACTION = 0.1
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 1
+
 
 class Player:
     Enemy = []
@@ -13,7 +27,7 @@ class Player:
         self.sx,self.sy = get_canvas_width() // 2,get_canvas_height() // 2
         
         self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
-        self.speed = 5
+        self.speed = 1
         self.cur_map = cur_map
         
         self.state_machine = State_Machine.StateMachine(self)
@@ -98,6 +112,18 @@ class Player:
                 enemy.get_attacked()
             pass
 
+    def move(self):
+        if self.dir[0]:
+            self.y -= self.speed * RUN_SPEED_PPS * game_framework.frame_time
+            pass
+        if self.dir[1]:
+            self.y += self.speed * RUN_SPEED_PPS * game_framework.frame_time
+            pass
+        if self.dir[2]:
+            self.x += self.speed * RUN_SPEED_PPS * game_framework.frame_time
+            pass
+        if self.dir[3]:
+            self.x -= self.speed * RUN_SPEED_PPS * game_framework.frame_time
 
 class Idle:
     @staticmethod
@@ -110,22 +136,22 @@ class Idle:
     
     @staticmethod
     def do(player):
-        player.frame = (player.frame + 1) % 6
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
         pass
     
     @staticmethod
     def draw(player):
         if player.dir[0]:
-            player.movement_sprite[0].clip_draw(player.frame*64,64,64,64,player.sx,player.sy,128,128)
+            player.movement_sprite[0].clip_draw(int(player.frame)*64,64,64,64,player.sx,player.sy,128,128)
             pass
         elif player.dir[1]:
-            player.movement_sprite[1].clip_draw(player.frame*64,64,64,64,player.sx,player.sy,128,128)
+            player.movement_sprite[1].clip_draw(int(player.frame)*64,64,64,64,player.sx,player.sy,128,128)
             pass
         elif player.dir[2]:
-            player.movement_sprite[2].clip_draw(player.frame*64,64,64,64,player.sx,player.sy,128,128)
+            player.movement_sprite[2].clip_draw(int(player.frame)*64,64,64,64,player.sx,player.sy,128,128)
             pass
         elif player.dir[3]:
-            player.movement_sprite[2].clip_composite_draw(player.frame*64,64,64,64,0,'h',player.sx,player.sy,128,128)
+            player.movement_sprite[2].clip_composite_draw(int(player.frame)*64,64,64,64,0,'h',player.sx,player.sy,128,128)
             pass
     
 class Move:
@@ -139,33 +165,22 @@ class Move:
     
     @staticmethod
     def do(player):
-        if player.dir[0]:
-            player.y -= player.speed
-            pass
-        if player.dir[1]:
-            player.y += player.speed
-            pass
-        if player.dir[2]:
-            player.x += player.speed
-            pass
-        if player.dir[3]:
-            player.x -= player.speed
-
-        player.frame = (player.frame + 1) % 6
+        player.move()
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
         
     @staticmethod
     def draw(player):
         if player.dir[0]:
-            player.movement_sprite[0].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.movement_sprite[0].clip_draw(int(player.frame)*64,0,64,64,player.sx,player.sy,128,128)
             pass
         elif player.dir[1]:
-            player.movement_sprite[1].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.movement_sprite[1].clip_draw(int(player.frame)*64,0,64,64,player.sx,player.sy,128,128)
             pass
         elif player.dir[2]:
-            player.movement_sprite[2].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.movement_sprite[2].clip_draw(int(player.frame)*64,0,64,64,player.sx,player.sy,128,128)
             pass
         elif player.dir[3]:
-            player.movement_sprite[2].clip_composite_draw(player.frame*64,0,64,64,0,'h',player.sx,player.sy,128,128)
+            player.movement_sprite[2].clip_composite_draw(int(player.frame)*64,0,64,64,0,'h',player.sx,player.sy,128,128)
             pass
         
 class Attack_1:
@@ -181,8 +196,8 @@ class Attack_1:
     
     @staticmethod
     def do(player):
-        player.frame = player.frame + 1
-        if player.frame == 14:
+        player.frame = player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
+        if int(player.frame) == 14:
             if player.attack_side == 0:
                 player.frame = 0
                 player.state_machine.start(Idle)
@@ -198,16 +213,16 @@ class Attack_1:
     @staticmethod
     def draw(player):
         if player.dir[0]:
-            player.attack_sprite[0].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
+            player.attack_sprite[0].clip_draw(int(player.frame) * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[1]:
-            player.attack_sprite[1].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
+            player.attack_sprite[1].clip_draw(int(player.frame) * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[2]:
-            player.attack_sprite[2].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
+            player.attack_sprite[2].clip_draw(int(player.frame) * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[3]:
-            player.attack_sprite[2].clip_composite_draw(player.frame * 64, 0, 64, 64, 0, 'h', player.sx, player.sy, 128, 128)
+            player.attack_sprite[2].clip_composite_draw(int(player.frame) * 64, 0, 64, 64, 0, 'h', player.sx, player.sy, 128, 128)
             pass
         
 class Attack_2:
@@ -223,9 +238,9 @@ class Attack_2:
     
     @staticmethod
     def do(player):
-        player.frame = player.frame + 1
+        player.frame = player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
         
-        if player.frame == 21:
+        if int(player.frame) == 21:
             if player.attack_side == 1:
                 player.state_machine.start(Idle)
                 player.state = 'idle'
@@ -244,16 +259,16 @@ class Attack_2:
     @staticmethod
     def draw(player):
         if player.dir[0]:
-            player.attack_sprite[0].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
+            player.attack_sprite[0].clip_draw(int(player.frame) * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[1]:
-            player.attack_sprite[1].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
+            player.attack_sprite[1].clip_draw(int(player.frame) * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[2]:
-            player.attack_sprite[2].clip_draw(player.frame * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
+            player.attack_sprite[2].clip_draw(int(player.frame) * 64, 0, 64, 64, player.sx, player.sy, 128, 128)
             pass
         elif player.dir[3]:
-            player.attack_sprite[2].clip_composite_draw(player.frame * 64, 0, 64, 64, 0, 'h', player.sx, player.sy, 128, 128)
+            player.attack_sprite[2].clip_composite_draw(int(player.frame) * 64, 0, 64, 64, 0, 'h', player.sx, player.sy, 128, 128)
             pass
           
 class Dash:
@@ -261,46 +276,36 @@ class Dash:
     def enter(player):
         player.is_invincibility = True
         player.frame = 0
-        player.speed += 20
+        player.speed += 2
         
     @staticmethod
     def exit(player):
         player.is_invincibility = False
-        player.speed -= 20
+        player.speed -= 2
         player.frame = 0
         pass
     
     @staticmethod
     def do(player):
-        if player.dir[0]:
-            player.y -= player.speed
-            pass
-        if player.dir[1]:
-            player.y += player.speed
-            pass
-        if player.dir[2]:
-            player.x += player.speed
-            pass
-        if player.dir[3]:
-            player.x -= player.speed
+        player.move()
         
-        player.frame = player.frame + 1
+        player.frame = player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
         
-        if player.frame == 3:
+        if int(player.frame) == 3:
             player.state_machine.start(Move)
             player.state = 'move' 
     
     @staticmethod
     def draw(player):
         if player.dir[0]:
-            player.dash_sprite[0].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.dash_sprite[0].clip_draw(int(player.frame)*64,0,64,64,player.sx,player.sy,128,128)
         elif player.dir[1]:
-            player.dash_sprite[1].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.dash_sprite[1].clip_draw(int(player.frame)*64,0,64,64,player.sx,player.sy,128,128)
             pass
         elif player.dir[2]:
-            player.dash_sprite[2].clip_draw(player.frame*64,0,64,64,player.sx,player.sy,128,128)
+            player.dash_sprite[2].clip_draw(int(player.frame)*64,0,64,64,player.sx,player.sy,128,128)
             pass
         elif player.dir[3]:
-            player.dash_sprite[2].clip_composite_draw(player.frame*64,0,64,64,0,'h',player.sx,player.sy,128,128)
+            player.dash_sprite[2].clip_composite_draw(int(player.frame)*64,0,64,64,0,'h',player.sx,player.sy,128,128)
             pass
         

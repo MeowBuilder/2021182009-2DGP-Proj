@@ -32,15 +32,12 @@ def init():
     player.cur_map = worldmap
 
     boss_1 = Boss(player)
-    summon1 = summon(player)
     player.Enemy.append(boss_1)
-    player.Enemy.append(summon1)
     playerUI = Player_HP(player)
 
     game_world.add_object(worldmap,0)
     game_world.add_object(player,2)
-    game_world.add_object(boss_1,1)
-    game_world.add_object(summon1,1)
+    #game_world.add_object(boss_1,1)
     game_world.add_object(playerUI,3)
 
     pass
@@ -52,10 +49,6 @@ def finish():
 
 def update():
     game_world.update()
-    draw()
-
-    if game_framework.running:
-        threading.Timer(0.05, update).start()
 
 def draw():
     clear_canvas()
