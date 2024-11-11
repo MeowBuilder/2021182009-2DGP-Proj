@@ -1,5 +1,4 @@
 import math
-from itertools import filterfalse
 
 from pico2d import *
 import random
@@ -59,7 +58,7 @@ class Boss:
             self.is_invincibility = True
             print(f'BOSS HP : {self.HP}')
             
-            if self.HP <= 0:
+            if self.HP == 0:
                 self.state_machine.start(Die)
             elif self.HP <= 5 and not self.do_under50:
                 self.state_machine.start(under50_skill)
@@ -161,18 +160,19 @@ class under50_skill:
     def enter(Boss):
         print('enter under50')
         Boss.frame = 0
-        Boss.player.is_invincibility = True
+        Boss.is_invincibility = True
         Boss.start_time = get_time()
         pass
 
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.player.is_invincibility = False
+        Boss.is_invincibility = False
         pass
 
     @staticmethod
     def do(Boss):
+        Boss.is_invincibility = True
         if get_time() - Boss.start_time >= 1 and Boss.frame >= 4:
             Boss.state_machine.start(Idle)
         elif get_time() - Boss.start_time >= 1:

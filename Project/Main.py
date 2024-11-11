@@ -2,6 +2,7 @@ from pico2d import *
 from Player import *
 from UI import *
 from Boss import *
+from summon import *
 import Map
 import threading
 
@@ -47,6 +48,7 @@ def reset_world():
     global playerUI
     global boss_1
     global worldmap
+    global summon1
     
     running = True
     world = []
@@ -63,6 +65,9 @@ def reset_world():
     world.append(boss_1)
     player.Boss = boss_1
 
+    summon1 = summon(player)
+    world.append(summon1)
+    
     playerUI = Player_HP()
     pass
 
