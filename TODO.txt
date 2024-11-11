@@ -1,3 +1,6 @@
 보스1 50% 패턴 - 쫄몹소환
 보스2, 맵2 제작
 맵1->맵2이동
+
+==Refactor==
+game_framework / game_mode / world.py
