@@ -13,7 +13,7 @@ RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 # Action Speed
-TIME_PER_ACTION = 0.5
+TIME_PER_ACTION = 0.1
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 1
 
@@ -82,7 +82,7 @@ class Boss:
 class Idle:
     @staticmethod
     def enter(Boss):
-        Boss.idle_time = 0
+        Boss.idle_time = get_time()
         pass
     
     @staticmethod
@@ -91,13 +91,13 @@ class Idle:
     
     @staticmethod
     def do(Boss):
-        Boss.idle_time += 0.5
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
 
         Boss.move_to_player(Boss.player)
-        if Boss.idle_time >= 30:
+        if get_time() - Boss.idle_time >= 5:
             Boss.state_machine.start(Boss.next_pattern)
             Boss.set_random_pattern()
+            Boss.idle_time = get_time()
     
     @staticmethod
     def draw(Boss):

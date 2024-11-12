@@ -196,7 +196,7 @@ class Attack_1:
     
     @staticmethod
     def do(player):
-        player.frame = player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
+        player.frame = player.frame + FRAMES_PER_ACTION * 2 * ACTION_PER_TIME * game_framework.frame_time
         if int(player.frame) == 14:
             if player.attack_side == 0:
                 player.frame = 0
@@ -238,7 +238,7 @@ class Attack_2:
     
     @staticmethod
     def do(player):
-        player.frame = player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
+        player.frame = player.frame + FRAMES_PER_ACTION * 2 * ACTION_PER_TIME * game_framework.frame_time
         
         if int(player.frame) == 21:
             if player.attack_side == 1:
