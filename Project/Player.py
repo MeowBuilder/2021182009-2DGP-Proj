@@ -83,8 +83,6 @@ class Player:
                 elif self.state_machine.cur_state == Attack_2:
                     self.attack_side = 2
                 else:
-                    self.frame = 0
-                    self.attack_side = 0
                     self.switch_state(Attack_1)
 
     def switch_dir(self,dir_index):
@@ -186,6 +184,8 @@ class Move:
 class Attack_1:
     @staticmethod
     def enter(player):
+        player.frame = 0
+        player.attack_side = 0
         pass
     
     @staticmethod

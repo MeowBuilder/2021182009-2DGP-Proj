@@ -4,10 +4,12 @@ from pico2d import *
 import random
 import State_Machine
 import game_framework
+import summon
+import game_world
 
 # Run Speed
 PIXEL_PER_METER = (64.0 / 1.0)
-RUN_SPEED_KMPH = 10.0 # Km / Hour
+RUN_SPEED_KMPH = 5.0 # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -188,6 +190,8 @@ class under50_skill:
         elif get_time() - Boss.start_time >= 1:
             Boss.frame = (Boss.frame + 1)
             Boss.start_time = get_time()
+            newenemy = summon.summon(Boss.player,Boss.x + random.randint(-100,100),Boss.y + random.randint(-100,100))
+            game_world.add_object(newenemy,1)
 
     @staticmethod
     def draw(Boss):

@@ -1,11 +1,24 @@
 from pico2d import *
+import game_framework
+
+# Run Speed
+PIXEL_PER_METER = (64.0 / 1.0)
+RUN_SPEED_KMPH = 5.0 # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# Action Speed
+TIME_PER_ACTION = 0.1
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 1
 
 class summon:
     Appear_sprite = None
     Death_sprite = None
     Idle_sprite = None
     player = None
-    def __init__(self,Player):
+    def __init__(self,Player,x = 640,y = 360):
         if summon.Appear_sprite is None:
             summon.Appear_sprite = load_image('./Asset/Boss/summonAppear.png')
         if summon.Death_sprite is None:
@@ -15,7 +28,7 @@ class summon:
         if summon.player is None:
             summon.player = Player
             
-        self.x, self.y = 640,360
+        self.x, self.y = x,y
         self.sx, self.sy = 0,0
         self.dead = False
         self.is_invincibility = False
@@ -30,6 +43,8 @@ class summon:
         pass
     
     def update(self):
+        self.frame = self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
+        #여기부터 수정
         if self.Appear:
             if get_time() - self.Appear_time > 1:
                 self.Appear_time = get_time()
@@ -82,5 +97,6 @@ class summon:
         
     def move_to_player(self,Player):
         self.dir = ((Player.x-self.x)/max(1,abs(Player.x-self.x)))
-        self.x += ((Player.x-self.x)/max(1,abs(Player.x-self.x))) * self.speed
-        self.y += ((Player.y-self.y)/max(1,abs(Player.y-self.y))) * self.speed
+        self.x += ((Player.x-self.x)/max(1,abs(Player.x-self.x))) * self.speed * RUN_SPEED_PPS * game_framework.frame_time
+        self.y += ((Player.y-self.y)/max(1,abs(Player.y-self.y))) * self.speed * RUN_SPEED_PPS * game_framework.frame_time
+        pass
