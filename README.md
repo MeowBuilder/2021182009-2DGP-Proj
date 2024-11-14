@@ -1,7 +1,7 @@
 # 2DGP Project
 > 2024-2 2DGP 프로젝트입니다.
 
-![header](https://capsule-render.vercel.app/api?type=transparent&height=300&color=gradient&text=Game%20Title&section=header&textBg=false&fontSize=80&fontAlign=30&fontAlignY=60&animation=twinkling&rotate=0&desc=-sub%20title-&descAlign=70&descAlignY=65&descSize=30&theme=radical)
+![header](https://capsule-render.vercel.app/api?type=transparent&height=300&color=gradient&text=Red%20Souls&section=header&textBg=false&fontSize=80&fontAlign=30&fontAlignY=60&animation=twinkling&rotate=0&desc=-from%20titan%20souls-&descAlign=70&descAlignY=65&descSize=30&theme=radical)
 
 ## 게임 컨셉
 
