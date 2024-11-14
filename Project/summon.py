@@ -1,5 +1,6 @@
 from pico2d import *
 import game_framework
+import game_world
 
 # Run Speed
 PIXEL_PER_METER = (64.0 / 1.0)
@@ -9,7 +10,7 @@ RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 # Action Speed
-TIME_PER_ACTION = 0.1
+TIME_PER_ACTION = 0.2
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 1
 
@@ -44,42 +45,37 @@ class summon:
     
     def update(self):
         self.frame = self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
-        #여기부터 수정
         if self.Appear:
-            if get_time() - self.Appear_time > 1:
-                self.Appear_time = get_time()
-                self.frame = self.frame + 1
-                if self.frame == 6:
-                    self.Appear = False
+            self.is_invincibility = True
+            if int(self.frame) == 6:
+                self.Appear = False
             pass
         elif not self.dead:
-            self.frame = (self.frame + 1) % 4
             self.move_to_player(self.player)
+            self.frame = self.frame % 4
         elif self.dead:
-            if get_time() - self.Appear_time > 1:
-                self.Appear_time = get_time()
-                self.frame = self.frame + 1
-                if self.frame == 6:
-                    pass
+            if int(self.frame) == 6:
+                self.player.Enemy.remove(self)
+                game_world.remove_object(self)
             pass
         
     def draw(self):
         self.sx,self.sy = self.x - self.player.cur_map.window_left, self.y - self.player.cur_map.window_bottom
         if self.Appear:
             if self.dir < 0:
-                self.Appear_sprite.clip_composite_draw(self.frame*50,0,50,50,0,'h',self.sx ,self.sy ,128,128)
+                self.Appear_sprite.clip_composite_draw(int(self.frame)*50,0,50,50,0,'h',self.sx ,self.sy ,128,128)
             else:
-                self.Appear_sprite.clip_composite_draw(self.frame*50,0,50,50,0,'w',self.sx ,self.sy ,128,128)
+                self.Appear_sprite.clip_composite_draw(int(self.frame)*50,0,50,50,0,'w',self.sx ,self.sy ,128,128)
         elif not self.dead:
             if self.dir < 0:
-                self.Idle_sprite.clip_composite_draw(self.frame*50,0,50,50,0,'h',self.sx ,self.sy ,128,128)
+                self.Idle_sprite.clip_composite_draw(int(self.frame)*50,0,50,50,0,'h',self.sx ,self.sy ,128,128)
             else:
-                self.Idle_sprite.clip_composite_draw(self.frame*50,0,50,50,0,'w',self.sx ,self.sy ,128,128)
+                self.Idle_sprite.clip_composite_draw(int(self.frame)*50,0,50,50,0,'w',self.sx ,self.sy ,128,128)
         elif self.dead:
             if self.dir < 0:
-                self.Death_sprite.clip_composite_draw(self.frame*50,0,50,50,0,'h',self.sx ,self.sy ,128,128)
+                self.Death_sprite.clip_composite_draw(int(self.frame)*50,0,50,50,0,'h',self.sx ,self.sy ,128,128)
             else:
-                self.Death_sprite.clip_composite_draw(self.frame*50,0,50,50,0,'w',self.sx ,self.sy ,128,128)
+                self.Death_sprite.clip_composite_draw(int(self.frame)*50,0,50,50,0,'w',self.sx ,self.sy ,128,128)
             pass
     
     def get_attacked(self):

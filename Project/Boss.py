@@ -49,6 +49,8 @@ class Boss:
         pass
 
     def update(self):
+        if not len(self.player.Enemy) == 1:
+            self.is_invincibility = True
         if not self.dead:
             self.state_machine.update()
         
@@ -60,13 +62,13 @@ class Boss:
     def set_random_pattern(self):
         self.next_pattern = random.choice(self.patterns)
         pass
-    
+
     def move_to_player(self,Player):
         self.dir = ((Player.x-self.x)/max(1,abs(Player.x-self.x)))
         self.x += ((Player.x-self.x)/max(1,abs(Player.x-self.x))) * self.speed * RUN_SPEED_PPS * game_framework.frame_time
         self.y += ((Player.y-self.y)/max(1,abs(Player.y-self.y))) * self.speed * RUN_SPEED_PPS * game_framework.frame_time
         pass
-
+    
     def get_attacked(self):
         if not self.is_invincibility and not self.dead:
             self.HP -= 1
@@ -192,6 +194,7 @@ class under50_skill:
             Boss.start_time = get_time()
             newenemy = summon.summon(Boss.player,Boss.x + random.randint(-100,100),Boss.y + random.randint(-100,100))
             game_world.add_object(newenemy,1)
+            Boss.player.Enemy.append(newenemy)
 
     @staticmethod
     def draw(Boss):
