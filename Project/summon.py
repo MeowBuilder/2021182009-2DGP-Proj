@@ -2,17 +2,8 @@ from pico2d import *
 import game_framework
 import game_world
 
-# Run Speed
-PIXEL_PER_METER = (64.0 / 1.0)
-RUN_SPEED_KMPH = 5.0 # Km / Hour
-RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
-RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
-RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+from Speed_info import *
 
-# Action Speed
-TIME_PER_ACTION = 0.2
-ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 1
 
 class summon:
     Appear_sprite = None
@@ -93,6 +84,6 @@ class summon:
         
     def move_to_player(self,Player):
         self.dir = ((Player.x-self.x)/max(1,abs(Player.x-self.x)))
-        self.x += ((Player.x-self.x)/max(1,abs(Player.x-self.x))) * self.speed * RUN_SPEED_PPS * game_framework.frame_time
-        self.y += ((Player.y-self.y)/max(1,abs(Player.y-self.y))) * self.speed * RUN_SPEED_PPS * game_framework.frame_time
+        self.x += ((Player.x-self.x)/max(1,abs(Player.x-self.x))) * self.speed * SummonSpeed * game_framework.frame_time
+        self.y += ((Player.y-self.y)/max(1,abs(Player.y-self.y))) * self.speed * SummonSpeed * game_framework.frame_time
         pass

@@ -2,17 +2,7 @@ from pico2d import *
 import State_Machine
 import game_framework
 
-# Run Speed
-PIXEL_PER_METER = (64.0 / 1.0)
-RUN_SPEED_KMPH = 10.0 # Km / Hour
-RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
-RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
-RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
-
-# Action Speed
-TIME_PER_ACTION = 0.1
-ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 1
+from Speed_info import *
 
 
 class Player:
@@ -112,16 +102,16 @@ class Player:
 
     def move(self):
         if self.dir[0]:
-            self.y -= self.speed * RUN_SPEED_PPS * game_framework.frame_time
+            self.y -= self.speed * PlayerSpeed * game_framework.frame_time
             pass
         if self.dir[1]:
-            self.y += self.speed * RUN_SPEED_PPS * game_framework.frame_time
+            self.y += self.speed * PlayerSpeed * game_framework.frame_time
             pass
         if self.dir[2]:
-            self.x += self.speed * RUN_SPEED_PPS * game_framework.frame_time
+            self.x += self.speed * PlayerSpeed * game_framework.frame_time
             pass
         if self.dir[3]:
-            self.x -= self.speed * RUN_SPEED_PPS * game_framework.frame_time
+            self.x -= self.speed * PlayerSpeed * game_framework.frame_time
 
 class Idle:
     @staticmethod

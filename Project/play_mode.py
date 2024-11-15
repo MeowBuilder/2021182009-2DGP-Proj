@@ -7,7 +7,6 @@ from UI import *
 from Boss import *
 from summon import *
 import Map
-import threading
 
 def handle_events():
     events = get_events()
@@ -20,12 +19,9 @@ def handle_events():
             player.handle_events(event)
 
 def init():
-    global running
+    resize_canvas(800,600)
+    
     global player
-    global playerUI
-    global boss_1
-    global worldmap
-    global summon1
 
     player = Player(None)
     worldmap = Map.Map(player)
