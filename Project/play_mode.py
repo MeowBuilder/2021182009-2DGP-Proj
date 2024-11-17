@@ -5,6 +5,7 @@ import game_world
 from Player import *
 from UI import *
 from Boss import *
+from Boss_2 import *
 from summon import *
 import Map
 
@@ -27,13 +28,13 @@ def init():
     worldmap = Map.Map(player)
     player.cur_map = worldmap
 
-    boss_1 = Boss(player)
-    player.Enemy.append(boss_1)
+    boss_2 = Boss_2(player)
+    player.Enemy.append(boss_2)
     playerUI = Player_HP(player)
 
     game_world.add_object(worldmap,0)
     game_world.add_object(player,2)
-    game_world.add_object(boss_1,1)
+    game_world.add_object(boss_2,1)
     game_world.add_object(playerUI,3)
 
     pass

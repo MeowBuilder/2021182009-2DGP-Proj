@@ -37,43 +37,41 @@ class Player:
         
     def handle_events(self,event):
         if event.type == SDL_KEYDOWN:
-            if event.key == SDLK_s:
+            if event.key == SDLK_DOWN:
                 self.switch_dir(0)
                 self.switch_state(Move)
-            elif event.key == SDLK_w:
+            elif event.key == SDLK_UP:
                 self.switch_dir(1)
                 self.switch_state(Move)
-            elif event.key == SDLK_d:
+            elif event.key == SDLK_RIGHT:
                 self.switch_dir(2)
                 self.switch_state(Move)
-            elif event.key == SDLK_a:
+            elif event.key == SDLK_LEFT:
                 self.switch_dir(3)
                 self.switch_state(Move)
             elif event.key == SDLK_LSHIFT:
                 self.switch_state(Dash)
-            elif event.key == SDLK_h:
-                self.HP = 5
-        elif event.type == SDL_KEYUP:
-            if event.key == SDLK_s:
-                if self.dir[0] and self.state_machine.cur_state == Move:
-                    self.switch_state(Idle)
-            elif event.key == SDLK_w:
-                if self.dir[1] and self.state_machine.cur_state == Move:
-                    self.switch_state(Idle)
-            elif event.key == SDLK_d:
-                if self.dir[2] and self.state_machine.cur_state == Move:
-                    self.switch_state(Idle)
-            elif event.key == SDLK_a:
-                if self.dir[3] and self.state_machine.cur_state == Move:
-                    self.switch_state(Idle)
-        elif event.type == SDL_MOUSEBUTTONDOWN:
-            if event.button == SDL_BUTTON_LEFT:
+            elif event.key == SDLK_z:
                 if self.state_machine.cur_state == Attack_1:
                     self.attack_side = 1
                 elif self.state_machine.cur_state == Attack_2:
                     self.attack_side = 2
                 else:
                     self.switch_state(Attack_1)
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_DOWN:
+                if self.dir[0] and self.state_machine.cur_state == Move:
+                    self.switch_state(Idle)
+            elif event.key == SDLK_UP:
+                if self.dir[1] and self.state_machine.cur_state == Move:
+                    self.switch_state(Idle)
+            elif event.key == SDLK_RIGHT:
+                if self.dir[2] and self.state_machine.cur_state == Move:
+                    self.switch_state(Idle)
+            elif event.key == SDLK_LEFT:
+                if self.dir[3] and self.state_machine.cur_state == Move:
+                    self.switch_state(Idle)
+                
 
     def switch_dir(self,dir_index):
         if self.state_machine.cur_state == Attack_2 or self.state_machine.cur_state == Dash:
