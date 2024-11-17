@@ -22,7 +22,7 @@ class Boss_2:
         self.speed = 1
         self.cur_pattern = Idle
         self.next_pattern = counter
-        self.patterns = [counter]
+        self.patterns = [counter,Attack1]
         self.idle_time = 0
         self.dir = 0
         self.is_invincibility = False
@@ -66,8 +66,6 @@ class Boss_2:
             print(f'BOSS HP : {self.HP}')
             
             if self.HP == 0:
-                pass
-            elif self.HP <= 5 and not self.do_under50:
                 pass
             pass
         pass
@@ -215,38 +213,6 @@ class counter_attack:
         else:
             Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 30, 128, 128)
 
-
-class under50_skill:
-    @staticmethod
-    def enter(Boss):
-        print('enter under50')
-        Boss.frame = 0
-        Boss.is_invincibility = True
-        Boss.start_time = get_time()
-        pass
-
-    @staticmethod
-    def exit(Boss):
-        Boss.frame = 0
-        Boss.is_invincibility = False
-        pass
-
-    @staticmethod
-    def do(Boss):
-        Boss.is_invincibility = True
-        if get_time() - Boss.start_time >= 1 and Boss.frame >= 4:
-            Boss.state_machine.start(Idle)
-        elif get_time() - Boss.start_time >= 1:
-            Boss.frame = (Boss.frame + 1)
-            Boss.start_time = get_time()
-
-    @staticmethod
-    def draw(Boss):
-        if Boss.dir < 0:
-            Boss.under50_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 30, 128, 128)
-        else:
-            Boss.under50_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 30, 128, 128)
-            
 class Die:
     @staticmethod
     def enter(Boss):
