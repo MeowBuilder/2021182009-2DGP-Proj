@@ -6,6 +6,7 @@ import State_Machine
 import game_framework
 import summon
 import game_world
+import Stage1
 
 from Speed_info import *
 
@@ -18,7 +19,8 @@ class Boss:
         self.death_sprite = load_image('./Asset/Boss/death.png')
         self.frame = 0
         
-        self.HP = 10
+        self.MAXHP = 10
+        self.HP = self.MAXHP
         self.x, self.y = 640, 720
         self.sx, self.sy = 0,0
         self.speed = 1
@@ -61,10 +63,10 @@ class Boss:
     def dead_func(self):
         self.player.Enemy.remove(self)
         game_world.remove_object(self)
+        Stage1.Clear = True
         pass
     
     def get_attacked(self):
-        print(f'BOSS HP : {self.HP}')
         if not self.is_invincibility and not self.dead:
             print(f'BOSS HP : {self.HP}')
             self.HP -= 1
@@ -72,7 +74,7 @@ class Boss:
             
             if self.HP == 0:
                 self.state_machine.start(Die)
-            elif self.HP <= 5 and not self.do_under50:
+            elif self.HP <= self.MAXHP/2 and not self.do_under50:
                 self.state_machine.start(under50_skill)
                 self.do_under50 = True
             pass
