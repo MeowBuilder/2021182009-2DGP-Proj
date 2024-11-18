@@ -64,6 +64,7 @@ class Boss:
         pass
     
     def get_attacked(self):
+        print(f'BOSS HP : {self.HP}')
         if not self.is_invincibility and not self.dead:
             print(f'BOSS HP : {self.HP}')
             self.HP -= 1
@@ -206,7 +207,6 @@ class Die:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.dead_func()
         pass
     
     @staticmethod
@@ -214,6 +214,7 @@ class Die:
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if int(Boss.frame) == 19:
             Boss.dead = True
+            Boss.dead_func()
     
     @staticmethod
     def draw(Boss):

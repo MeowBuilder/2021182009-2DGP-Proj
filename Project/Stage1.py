@@ -1,4 +1,5 @@
 from pico2d import *
+import Stage2
 import game_framework
 
 import game_world
@@ -16,6 +17,8 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_n:
+            game_framework.change_mode(Stage2)
         else:
             player.handle_events(event)
 
@@ -28,19 +31,21 @@ def init():
     worldmap = Map.Map(player)
     player.cur_map = worldmap
 
-    boss_2 = Boss_2(player)
-    player.Enemy.append(boss_2)
+    boss = Boss(player)
+    player.Enemy.append(boss)
     playerUI = Player_HP(player)
+    
 
     game_world.add_object(worldmap,0)
     game_world.add_object(player,2)
-    game_world.add_object(boss_2,1)
+    game_world.add_object(boss,1)
     game_world.add_object(playerUI,3)
 
     pass
 
 
 def finish():
+    Stage2.get_player_info(player)
     game_world.clear()
     pass
 
