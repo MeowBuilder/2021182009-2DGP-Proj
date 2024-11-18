@@ -1,6 +1,6 @@
 from pico2d import *
 import game_framework
-import play_mode
+import Stage1
 
 LOOP_TIME = 3.0
 FRAME_PER_LOOP = 15
@@ -13,7 +13,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_z:
-            game_framework.change_mode(play_mode)
+            game_framework.change_mode(Stage1)
         else:
             pass
 
@@ -22,7 +22,7 @@ def init():
     global frame
     frame = 0
     title = [load_image('./Asset/Title/Title-export' + '%d' %i + '.png') for i in range(1,16)]
-    pico2d.resize_canvas(1580,725)
+    pico2d.resize_canvas(1280,720)
     pass
 
 def finish():
@@ -34,7 +34,7 @@ def update():
     pass
 
 def draw():
-    title[int(frame)].draw(1580/2,725/2)
+    title[int(frame)].draw(1280/2,720/2,1280,720)
     update_canvas()
     pass
 

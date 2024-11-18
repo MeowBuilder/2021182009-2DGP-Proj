@@ -18,7 +18,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_n:
-            game_framework.change_mode(Stage2)
+            if Clear:
+                game_framework.change_mode(Stage2)
         else:
             player.handle_events(event)
 
@@ -26,6 +27,8 @@ def init():
     resize_canvas(800,600)
     
     global player
+    global Clear
+    Clear = False
 
     player = Player(None)
     worldmap = Map.Map(player)
