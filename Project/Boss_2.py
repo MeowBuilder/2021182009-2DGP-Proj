@@ -258,6 +258,7 @@ class under_50:
                 
                 if Boss.player_in_range(16):
                     Boss.in_range = True
+                    Boss.player.get_attacked()
                 
             if Boss.frame >= 6.9:
                 Boss.frame = 6
