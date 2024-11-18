@@ -174,14 +174,14 @@ class counter:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
-        Boss.player.is_invincibility = True
+        Boss.is_invincibility = True
         Boss.timer = get_time()
         pass
     
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.player.is_invincibility = False
+        Boss.is_invincibility = False
         pass
     
     @staticmethod
@@ -206,6 +206,7 @@ class counter_attack:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
+        Boss.player.is_invincibility = False
         pass
     
     @staticmethod
@@ -238,12 +239,13 @@ class under_50:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
+        Boss.player.is_invincibility = False
         Boss.patterns.append(dash_attack)
         pass
     
     @staticmethod
     def do(Boss):
-        Boss.player.is_invincibility = True
+        Boss.is_invincibility = True
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if get_time() - Boss.attack_time <= 1.5:
             if Boss.frame >= 3.9:
@@ -290,6 +292,7 @@ class dash_attack:
     
     @staticmethod
     def exit(Boss):
+        Boss.player.is_invincibility = False
         Boss.frame = 0
         pass
     
