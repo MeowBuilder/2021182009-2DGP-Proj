@@ -123,7 +123,7 @@ class Attack1:
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if 5 < Boss.frame < 9:
-            if math.sqrt((Boss.x - Boss.player.x) ** 2 + (Boss.y - Boss.player.y) ** 2) < 128:
+            if Boss.player.in_range(Boss,256):
                 Boss.player.get_attacked()
 
         if int(Boss.frame) == 13:
@@ -152,7 +152,7 @@ class Attack2:
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if 4 < Boss.frame < 7:
-            if math.sqrt((Boss.x - Boss.player.x) ** 2 + (Boss.y - Boss.player.y) ** 2) < 128:
+            if Boss.player.in_range(Boss,256):
                 Boss.player.get_attacked()
 
         if int(Boss.frame) == 12:

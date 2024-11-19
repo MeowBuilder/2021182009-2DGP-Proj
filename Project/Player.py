@@ -28,8 +28,8 @@ class Player:
         self.HP = 5
     def update(self):
         self.state_machine.update()
-        self.x = clamp(0,self.x,1280)
-        self.y = clamp(0,self.y,720)
+        self.x = clamp(0,self.x,self.cur_map.cw)
+        self.y = clamp(0,self.y,self.cur_map.ch)
             
     def draw(self):
         self.sx,self.sy = self.x - self.cur_map.window_left, self.y - self.cur_map.window_bottom
@@ -94,9 +94,12 @@ class Player:
 
     def do_attack(self):
         for enemy in self.Enemy:
-            if math.sqrt((self.x - enemy.x) ** 2 + (self.y - enemy.y) ** 2) < 64:
+            if self.in_range(enemy):
                 enemy.get_attacked()
             pass
+        
+    def in_range(self,Other, range = 128):
+        return math.sqrt((Other.x - self.x) ** 2 + (Other.y - self.y) ** 2) < range
 
     def move(self):
         if self.dir[0]:

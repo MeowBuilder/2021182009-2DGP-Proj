@@ -3,7 +3,7 @@ import game_framework
 
 import Title as start_mode
 
-open_canvas(800, 600)
+open_canvas(1280, 720)
 game_framework.run(start_mode)
 close_canvas()
 

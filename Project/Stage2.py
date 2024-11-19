@@ -26,8 +26,6 @@ def get_player_info(origin):
     pass
 
 def init():
-    resize_canvas(800,600)
-    
     worldmap = Map.Map(player)
     player.cur_map = worldmap
 

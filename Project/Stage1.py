@@ -24,7 +24,7 @@ def handle_events():
             player.handle_events(event)
 
 def init():
-    resize_canvas(800,600)
+    resize_canvas(1280,720)
     
     global player
     global Clear

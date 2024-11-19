@@ -75,8 +75,7 @@ class Boss_2:
         pass
     
     def player_in_range(self, range = 64):
-        return math.sqrt((self.x - self.player.x) ** 2 + (self.y - self.player.y) ** 2) < range
-        pass
+        return self.player.in_range(self,range)
     
 class Idle:
     @staticmethod
@@ -93,7 +92,7 @@ class Idle:
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 10
         
         if get_time() - Boss.idle_time >= 2:
-            if Boss.player_in_range():
+            if Boss.player.in_range(Boss):
                 Boss.state_machine.start(Boss.next_pattern)
                 Boss.set_random_pattern()
             else:
@@ -107,9 +106,9 @@ class Idle:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.idle_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.idle_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 24 ,160,160)
         else:
-            Boss.idle_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.idle_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 24 ,160,160)
    
          
 class Move:
@@ -128,7 +127,7 @@ class Move:
         
         Boss.move_to_player()
         if get_time() - Boss.move_time >= 3.5:
-            if Boss.player_in_range():
+            if Boss.player.in_range(Boss):
                 Boss.state_machine.start(Boss.next_pattern)
                 Boss.set_random_pattern()
             else:
@@ -137,9 +136,9 @@ class Move:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.move_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.move_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 24 ,160,160)
         else:
-            Boss.move_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.move_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 24 ,160,160)
         
 class Attack1:
     @staticmethod
@@ -157,7 +156,7 @@ class Attack1:
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if 3 < Boss.frame < 7:
-            if Boss.player_in_range():
+            if Boss.player.in_range(Boss):
                 Boss.player.get_attacked()
 
         if int(Boss.frame) == 7:
@@ -166,9 +165,9 @@ class Attack1:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 30, 128, 128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 24, 160, 160)
         else:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 30, 128, 128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 24, 160, 160)
         
 class counter:
     @staticmethod
@@ -193,9 +192,9 @@ class counter:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 30, 128, 128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 24, 160, 160)
         else:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 30, 128, 128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 24, 160, 160)
 
 class counter_attack:
     @staticmethod
@@ -214,7 +213,7 @@ class counter_attack:
         Boss.is_invincibility = True
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if 3 < Boss.frame < 7:
-            if math.sqrt((Boss.x - Boss.player.x) ** 2 + (Boss.y - Boss.player.y) ** 2) < 128:
+            if math.sqrt((Boss.x - Boss.player.x) ** 2 + (Boss.y - Boss.player.y) ** 2) < 160:
                 Boss.player.get_attacked()
 
         if int(Boss.frame) == 7:
@@ -223,9 +222,9 @@ class counter_attack:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 30, 128, 128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 24, 160, 160)
         else:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 30, 128, 128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 24, 160, 160)
 
 class under_50:
     @staticmethod
@@ -258,7 +257,7 @@ class under_50:
                 else:
                     Boss.speed = 1
                 
-                if Boss.player_in_range(16):
+                if Boss.player_in_range(32):
                     Boss.in_range = True
                     Boss.player.get_attacked()
                 
@@ -278,9 +277,9 @@ class under_50:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 24 ,160,160)
         else:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 24 ,160,160)
 
 class dash_attack:
     @staticmethod
@@ -324,9 +323,9 @@ class dash_attack:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 24 ,160,160)
         else:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 24 ,160,160)
 
 class Die:
     @staticmethod
@@ -348,6 +347,6 @@ class Die:
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 24 ,160,160)
         else:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 30 ,128,128)
+            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 24 ,160,160)
