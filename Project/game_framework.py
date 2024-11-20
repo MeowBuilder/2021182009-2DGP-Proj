@@ -48,7 +48,9 @@ def run(start_mode):
     global frame_time
     frame_time = 0.0
     current_time = time.time()
-
+    
+    global game_time
+    game_time = get_time()
 
     while running:
         stack[-1].handle_events()

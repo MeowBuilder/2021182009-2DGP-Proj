@@ -1,4 +1,5 @@
 from pico2d import *
+import Stage2
 import game_framework
 
 import game_world
@@ -19,13 +20,21 @@ def handle_events():
             player.handle_events(event)
 
 def get_player_info(origin):
-    global player
-    player = origin
-    player.Enemy.clear
-    player.x,player.y = 640,360
+    global player_info
+    player_info = origin
+    player_info.Enemy.clear()
+    player_info.x,player_info.y = 640,360
     pass
 
 def init():
+    global Clear
+    Clear = False
+    
+    global player
+    player = Player(None)
+    player.x,player.y = 640,360
+    player.HP = player_info.HP
+    player.Enemy.clear()
     worldmap = Map.Map(player)
     player.cur_map = worldmap
 
@@ -33,12 +42,13 @@ def init():
     player.Enemy.append(boss_2)
     playerUI = Player_HP(player)
     
+    player.cur_stage = Stage2
 
     game_world.add_object(worldmap,0)
     game_world.add_object(player,2)
     game_world.add_object(boss_2,1)
     game_world.add_object(playerUI,3)
-
+    
     pass
 
 

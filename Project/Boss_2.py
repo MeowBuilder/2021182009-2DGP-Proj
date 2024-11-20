@@ -265,6 +265,7 @@ class under_50:
                 Boss.frame = 6
                 Boss.speed = 1
         else:
+            Boss.player.is_invincibility = False
             Boss.attack_time = get_time()
             Boss.attack_count += 1
             Boss.frame = 0

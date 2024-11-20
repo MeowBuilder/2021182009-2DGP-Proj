@@ -6,7 +6,6 @@ import game_world
 from Player import *
 from UI import *
 from Boss import *
-from Boss_2 import *
 from summon import *
 import Map
 
@@ -38,6 +37,7 @@ def init():
     player.Enemy.append(boss)
     playerUI = Player_HP(player)
     
+    player.cur_stage = Stage1
 
     game_world.add_object(worldmap,0)
     game_world.add_object(player,2)

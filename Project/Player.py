@@ -23,6 +23,8 @@ class Player:
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
 
+        self.cur_stage = None
+        
         self.is_invincibility = False
         self.attack_side = 0
         self.HP = 5
@@ -90,6 +92,9 @@ class Player:
         if not self.is_invincibility:
             self.HP -= 1
             self.is_invincibility = True
+            
+            if self.HP <= 0:
+                self.player_died()
             pass
 
     def do_attack(self):
@@ -97,6 +102,11 @@ class Player:
             if self.in_range(enemy):
                 enemy.get_attacked()
             pass
+        
+    def player_died(self):
+        self.cur_stage.finish()
+        self.cur_stage.init()
+        pass
         
     def in_range(self,Other, range = 128):
         return math.sqrt((Other.x - self.x) ** 2 + (Other.y - self.y) ** 2) < range
