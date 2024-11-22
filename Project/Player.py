@@ -30,8 +30,8 @@ class Player:
         self.HP = 5
     def update(self):
         self.state_machine.update()
-        self.x = clamp(0,self.x,self.cur_map.cw)
-        self.y = clamp(0,self.y,self.cur_map.ch)
+        self.x = clamp(self.cur_map.map_size[0],self.x,self.cur_map.map_size[2])
+        self.y = clamp(self.cur_map.map_size[1],self.y,self.cur_map.map_size[3])
             
     def draw(self):
         self.sx,self.sy = self.x - self.cur_map.window_left, self.y - self.cur_map.window_bottom
@@ -54,6 +54,7 @@ class Player:
             elif event.key == SDLK_LSHIFT:
                 self.switch_state(Dash)
             elif event.key == SDLK_z:
+                print(f'{self.x,self.y}')
                 if self.state_machine.cur_state == Attack_1:
                     self.attack_side = 1
                 elif self.state_machine.cur_state == Attack_2:
