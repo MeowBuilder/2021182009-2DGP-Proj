@@ -1,8 +1,8 @@
 from pico2d import *
 
 class Map:
-    def __init__(self,Player):
-        self.map = load_image("./Asset/Map/Forest.png")
+    def __init__(self,Player,map_name):
+        self.map = load_image("./Asset/Map/"+map_name+".png")
         self.cw,self.ch = get_canvas_width(),get_canvas_height()
         self.w, self.h = self.map.w,self.map.h
         self.player = Player

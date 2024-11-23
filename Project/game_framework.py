@@ -2,13 +2,15 @@ import time
 
 from pico2d import get_time
 
+import Global_objects
+import Player
+from UI import Player_HP, Time
+
 
 def change_mode(mode):
     global stack
     if (len(stack) > 0):
-        # execute the current mode's finish function
         stack[-1].finish()
-        # remove the current mode
         stack.pop()
     stack.append(mode)
     mode.init()
@@ -25,12 +27,9 @@ def push_mode(mode):
 def pop_mode():
     global stack
     if (len(stack) > 0):
-        # execute the current mode's finish function
         stack[-1].finish()
-        # remove the current mode
         stack.pop()
 
-    # execute resume function of the previous mode
     if (len(stack) > 0):
         stack[-1].resume()
 
@@ -45,6 +44,10 @@ def run(start_mode):
     stack = [start_mode]
     start_mode.init()
 
+    Global_objects.G_objects.set_player(Player.Player(None))
+    Global_objects.G_objects.set_HPUI(Player_HP(Global_objects.G_objects.player))
+    Global_objects.G_objects.set_TimeUI(Time())
+    
     global frame_time
     frame_time = 0.0
     current_time = time.time()
@@ -60,7 +63,6 @@ def run(start_mode):
         frame_rate = 1.0 / frame_time
         current_time += frame_time
 
-    # repeatedly delete the top of the stack
     while (len(stack) > 0):
         stack[-1].finish()
         stack.pop()

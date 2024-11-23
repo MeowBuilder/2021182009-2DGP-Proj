@@ -1,4 +1,5 @@
 from pico2d import *
+import time
 
 class UI:
     def __init__(self,UI_name):
@@ -15,4 +16,17 @@ class Player_HP(UI):
         super().__init__('Player_HP')
         self.player = Player
     def draw(self):
-        self.image.clip_draw((5 - self.player.HP) * 48,0,48,16,self.player.sx,self.player.sy + 80,96,32)
+        self.image.clip_draw((5 - self.player.HP) * 48,0,48,16,self.player.sx,self.player.sy + 48,96,32)
+        
+class Time:
+    def __init__(self):
+        self.Font = load_font('./Asset/Font/PF스타더스트 3.0 Bold.TTF',32)
+        self.start_time = time.time()
+        self.time = 0
+        self.x,self.y = 640-100,680
+        
+    def update(self):
+        self.time = time.time() - self.start_time
+        
+    def draw(self):
+        self.Font.draw(self.x,self.y,'Time : %.2f' %(self.time),(255,255,255))

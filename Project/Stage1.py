@@ -1,4 +1,6 @@
+from asyncio import Server
 from pico2d import *
+import Global_objects
 import Stage2
 import game_framework
 
@@ -17,7 +19,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_n:
-            if Clear:
+            #if Clear:
                 game_framework.change_mode(Stage2)
         else:
             player.handle_events(event)
@@ -25,30 +27,30 @@ def handle_events():
 def init():
     resize_canvas(1280,720)
     
-    global player
     global Clear
     Clear = False
-
-    player = Player(None)
-    worldmap = Map.Map(player)
+    global player
+    
+    player = Global_objects.G_objects.player
+    playerUI = Global_objects.G_objects.PlayerUI
+    time_ui = Global_objects.G_objects.TimeUI
+    
+    worldmap = Map.Map(player,'Forest')
     player.cur_map = worldmap
-
     boss = Boss(player)
     player.Enemy.append(boss)
-    playerUI = Player_HP(player)
     
     player.cur_stage = Stage1
 
+    
     game_world.add_object(worldmap,0)
     game_world.add_object(player,2)
     game_world.add_object(boss,1)
     game_world.add_object(playerUI,3)
-
+    game_world.add_object(time_ui,3)
     pass
 
-
 def finish():
-    Stage2.get_player_info(player)
     game_world.clear()
     pass
 
