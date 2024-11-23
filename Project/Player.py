@@ -54,7 +54,6 @@ class Player:
             elif event.key == SDLK_LSHIFT:
                 self.switch_state(Dash)
             elif event.key == SDLK_z:
-                print(f'{self.x,self.y}')
                 if self.state_machine.cur_state == Attack_1:
                     self.attack_side = 1
                 elif self.state_machine.cur_state == Attack_2:

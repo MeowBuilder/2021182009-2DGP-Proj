@@ -1,4 +1,5 @@
 from pico2d import *
+import Stage1
 import Stage2
 import game_framework
 
@@ -16,6 +17,9 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_n:
+            if Clear:
+                game_framework.change_mode(Stage1)
         else:
             player.handle_events(event)
 

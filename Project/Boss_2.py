@@ -2,6 +2,7 @@ import math
 
 from pico2d import *
 import random
+import Stage2
 import State_Machine
 import game_framework
 import game_world
@@ -67,11 +68,17 @@ class Boss_2:
             print(f'BOSS HP : {self.HP}')
             
             if self.HP == 0:
-                pass
+                self.state_machine.start(Die)
             elif self.HP <= self.MAXHP/2 and not self.do_under50:
                 self.state_machine.start(under_50)
                 self.do_under50 = True
             pass
+        pass
+    
+    def dead_func(self):
+        self.player.Enemy.remove(self)
+        game_world.remove_object(self)
+        Stage2.Clear = True
         pass
     
     def player_in_range(self, range = 64):
@@ -331,7 +338,7 @@ class dash_attack:
 class Die:
     @staticmethod
     def enter(Boss):
-        Boss.frame = 0
+        Boss.frame = 3
         pass
     
     @staticmethod
@@ -341,13 +348,13 @@ class Die:
     
     @staticmethod
     def do(Boss):
-        Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
-        if int(Boss.frame) == 19:
+        Boss.frame = (Boss.frame - FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 1/2)
+        if Boss.frame <= 0:
             Boss.dead = True
     
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 24 ,160,160)
+            Boss.hurt_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 24 ,160,160)
         else:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 24 ,160,160)
+            Boss.hurt_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 24 ,160,160)

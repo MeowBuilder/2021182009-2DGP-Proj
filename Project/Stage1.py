@@ -17,7 +17,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_n:
-            #if Clear:
+            if Clear:
                 game_framework.change_mode(Stage2)
         else:
             player.handle_events(event)
