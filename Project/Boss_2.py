@@ -81,8 +81,9 @@ class Boss_2:
         Stage2.Clear = True
         pass
     
-    def player_in_range(self, range = 64):
-        return self.player.in_range(self,range)
+    def do_attack(self):
+        if self.player.in_range(self,128):
+            self.player.get_attacked()
     
 class Idle:
     @staticmethod
@@ -116,7 +117,6 @@ class Idle:
             Boss.idle_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'h',Boss.sx ,Boss.sy + 24 ,160,160)
         else:
             Boss.idle_sprite.clip_composite_draw(int(Boss.frame)*96,0,96,96,0,'w',Boss.sx ,Boss.sy + 24 ,160,160)
-   
          
 class Move:
     @staticmethod
@@ -162,9 +162,8 @@ class Attack1:
     @staticmethod
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
-        if 3 < Boss.frame < 7:
-            if Boss.player.in_range(Boss):
-                Boss.player.get_attacked()
+        if 5 < Boss.frame < 7:
+            Boss.do_attack()
 
         if int(Boss.frame) == 7:
             Boss.state_machine.start(Idle)
@@ -192,16 +191,23 @@ class counter:
     
     @staticmethod
     def do(Boss):
-        if get_time() - Boss.timer >= 0.5:
+        if get_time() - Boss.timer >= 0.75:
             Boss.state_machine.start(Idle)
         pass
     
     @staticmethod
     def draw(Boss):
-        if Boss.dir < 0:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 24, 160, 160)
+        time_passed = get_time() - Boss.timer
+        if time_passed <= 0.25:
+            if Boss.dir < 0:
+                Boss.hurt_sprite.clip_composite_draw(0, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 24, 160, 160)
+            else:
+                Boss.hurt_sprite.clip_composite_draw(0, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 24, 160, 160)
         else:
-            Boss.attack_sprite.clip_composite_draw(int(Boss.frame) * 96, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 24, 160, 160)
+            if Boss.dir < 0:
+                Boss.attack_sprite.clip_composite_draw(0, 0, 96, 96, 0, 'h', Boss.sx, Boss.sy + 24, 160, 160)
+            else:
+                Boss.attack_sprite.clip_composite_draw(0, 0, 96, 96, 0, 'w', Boss.sx, Boss.sy + 24, 160, 160)
 
 class counter_attack:
     @staticmethod
@@ -220,8 +226,7 @@ class counter_attack:
         Boss.is_invincibility = True
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if 3 < Boss.frame < 7:
-            if math.sqrt((Boss.x - Boss.player.x) ** 2 + (Boss.y - Boss.player.y) ** 2) < 160:
-                Boss.player.get_attacked()
+            Boss.do_attack()
 
         if int(Boss.frame) == 7:
             Boss.state_machine.start(Idle)
@@ -264,9 +269,9 @@ class under_50:
                 else:
                     Boss.speed = 1
                 
-                if Boss.player_in_range(32):
+                if Boss.player.in_range(32):
                     Boss.in_range = True
-                    Boss.player.get_attacked()
+                    Boss.do_attack()
                 
             if Boss.frame >= 6.9:
                 Boss.frame = 6
@@ -319,7 +324,7 @@ class dash_attack:
                 
                 if Boss.player_in_range(16):
                     Boss.in_range = True
-                    Boss.player.get_attacked()
+                    Boss.do_attack()
                 
             if Boss.frame >= 6.9:
                 Boss.frame = 6

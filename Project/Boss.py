@@ -80,6 +80,11 @@ class Boss:
             pass
         pass
     
+    def do_attack(self):
+        if self.player.in_range(self,128):
+            self.player.get_attacked()
+        pass
+    
 class Idle:
     @staticmethod
     def enter(Boss):
@@ -123,8 +128,7 @@ class Attack1:
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if 5 < Boss.frame < 9:
-            if Boss.player.in_range(Boss,256):
-                Boss.player.get_attacked()
+            Boss.do_attack()
 
         if int(Boss.frame) == 13:
             Boss.state_machine.start(Idle)
@@ -152,8 +156,7 @@ class Attack2:
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if 4 < Boss.frame < 7:
-            if Boss.player.in_range(Boss,256):
-                Boss.player.get_attacked()
+            Boss.do_attack()
 
         if int(Boss.frame) == 12:
             Boss.state_machine.start(Idle)
