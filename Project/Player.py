@@ -30,8 +30,11 @@ class Player:
         self.HP = 5
     def update(self):
         self.state_machine.update()
-        self.x = clamp(self.cur_map.map_size[0],self.x,self.cur_map.map_size[2])
-        self.y = clamp(self.cur_map.map_size[1],self.y,self.cur_map.map_size[3])
+        if self.y >= self.cur_map.h:
+            self.cur_stage.move_to_next_stage()
+
+        self.x = clamp(0,self.x,self.cur_map.w)
+        self.y = clamp(0,self.y,self.cur_map.h)
             
     def draw(self):
         self.sx,self.sy = self.x - self.cur_map.window_left, self.y - self.cur_map.window_bottom

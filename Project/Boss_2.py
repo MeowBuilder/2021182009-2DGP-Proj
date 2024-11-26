@@ -6,11 +6,12 @@ import Stage2
 import State_Machine
 import game_framework
 import game_world
+import Server
 
 from Speed_info import *
 
 class Boss_2:
-    def __init__(self,Player):
+    def __init__(self):
         self.idle_sprite = load_image('./Asset/Boss_2/IDLE.png')
         self.move_sprite = load_image('./Asset/Boss_2/RUN.png')
         self.hurt_sprite = load_image('./Asset/Boss_2/HURT.png')
@@ -34,8 +35,6 @@ class Boss_2:
         
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
-        
-        self.player = Player
         pass
 
     def update(self):
@@ -44,7 +43,7 @@ class Boss_2:
         
     def draw(self):
         if not self.dead:
-            self.sx,self.sy = self.x - self.player.cur_map.window_left, self.y - self.player.cur_map.window_bottom
+            self.sx,self.sy = self.x - Server.player.cur_map.window_left, self.y - Server.player.cur_map.window_bottom
             self.state_machine.draw()
         
     def set_random_pattern(self):
@@ -52,9 +51,9 @@ class Boss_2:
         pass
 
     def move_to_player(self):
-        self.dir = ((self.player.x-self.x)/max(1,abs(self.player.x-self.x)))
-        self.x += ((self.player.x-self.x)/max(1,abs(self.player.x-self.x))) * self.speed * BossSpeed * game_framework.frame_time
-        self.y += ((self.player.y-self.y)/max(1,abs(self.player.y-self.y))) * self.speed * BossSpeed * game_framework.frame_time
+        self.dir = ((Server.player.x-self.x)/max(1,abs(Server.player.x-self.x)))
+        self.x += ((Server.player.x-self.x)/max(1,abs(Server.player.x-self.x))) * self.speed * BossSpeed * game_framework.frame_time
+        self.y += ((Server.player.y-self.y)/max(1,abs(Server.player.y-self.y))) * self.speed * BossSpeed * game_framework.frame_time
         pass
     
     def get_attacked(self):
@@ -76,14 +75,14 @@ class Boss_2:
         pass
     
     def dead_func(self):
-        self.player.Enemy.remove(self)
+        Server.player.Enemy.remove(self)
         game_world.remove_object(self)
         Stage2.Clear = True
         pass
     
     def do_attack(self):
-        if self.player.in_range(self,128):
-            self.player.get_attacked()
+        if Server.player.in_range(self,128):
+            Server.player.get_attacked()
     
 class Idle:
     @staticmethod
@@ -100,7 +99,7 @@ class Idle:
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 10
         
         if get_time() - Boss.idle_time >= 2:
-            if Boss.player.in_range(Boss):
+            if Server.player.in_range(Boss):
                 Boss.state_machine.start(Boss.next_pattern)
                 Boss.set_random_pattern()
             else:
@@ -134,7 +133,7 @@ class Move:
         
         Boss.move_to_player()
         if get_time() - Boss.move_time >= 3.5:
-            if Boss.player.in_range(Boss):
+            if Server.player.in_range(Boss):
                 Boss.state_machine.start(Boss.next_pattern)
                 Boss.set_random_pattern()
             else:
@@ -156,7 +155,7 @@ class Attack1:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.player.is_invincibility = False
+        Server.player.is_invincibility = False
         pass
     
     @staticmethod
@@ -218,7 +217,7 @@ class counter_attack:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.player.is_invincibility = False
+        Server.player.is_invincibility = False
         pass
     
     @staticmethod
@@ -250,7 +249,7 @@ class under_50:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.player.is_invincibility = False
+        Server.player.is_invincibility = False
         Boss.patterns.append(dash_attack)
         pass
     
@@ -269,7 +268,7 @@ class under_50:
                 else:
                     Boss.speed = 1
                 
-                if Boss.player.in_range(32):
+                if Server.player.in_range(32):
                     Boss.in_range = True
                     Boss.do_attack()
                 
@@ -277,7 +276,7 @@ class under_50:
                 Boss.frame = 6
                 Boss.speed = 1
         else:
-            Boss.player.is_invincibility = False
+            Server.player.is_invincibility = False
             Boss.attack_time = get_time()
             Boss.attack_count += 1
             Boss.frame = 0
@@ -304,7 +303,7 @@ class dash_attack:
     
     @staticmethod
     def exit(Boss):
-        Boss.player.is_invincibility = False
+        Server.player.is_invincibility = False
         Boss.frame = 0
         pass
     

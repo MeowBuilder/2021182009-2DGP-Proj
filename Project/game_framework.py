@@ -2,7 +2,7 @@ import time
 
 from pico2d import get_time
 
-import Global_objects
+import Server
 import Player
 from UI import Player_HP, Time
 
@@ -43,10 +43,6 @@ def run(start_mode):
     running = True
     stack = [start_mode]
     start_mode.init()
-
-    Global_objects.G_objects.set_player(Player.Player(None))
-    Global_objects.G_objects.set_HPUI(Player_HP(Global_objects.G_objects.player))
-    Global_objects.G_objects.set_TimeUI(Time())
     
     global frame_time
     frame_time = 0.0
@@ -54,6 +50,10 @@ def run(start_mode):
     
     global game_time
     game_time = get_time()
+
+    Server.player = Player.Player(None)
+    Server.PlayerUI = Player_HP(Server.player)
+    Server.TimeUI = Time()
 
     while running:
         stack[-1].handle_events()

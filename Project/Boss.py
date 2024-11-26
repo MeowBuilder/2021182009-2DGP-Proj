@@ -1,4 +1,5 @@
 import math
+import Server
 
 from pico2d import *
 import random
@@ -11,7 +12,7 @@ import Stage1
 from Speed_info import *
 
 class Boss:
-    def __init__(self,Player):
+    def __init__(self):
         self.idle_sprite = load_image('./Asset/Boss/idle.png')
         self.attack1_sprite = load_image('./Asset/Boss/attacking.png')
         self.attack2_sprite = load_image('./Asset/Boss/skill1.png')
@@ -36,18 +37,16 @@ class Boss:
         
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
-        
-        self.player = Player
         pass
 
     def update(self):
-        if not len(self.player.Enemy) == 1:
+        if not len(Server.player.Enemy) == 1:
             self.is_invincibility = True
         if not self.dead:
             self.state_machine.update()
     def draw(self):
         if not self.dead:
-            self.sx,self.sy = self.x - self.player.cur_map.window_left, self.y - self.player.cur_map.window_bottom
+            self.sx,self.sy = self.x - Server.player.cur_map.window_left, self.y - Server.player.cur_map.window_bottom
             self.state_machine.draw()
         
     def set_random_pattern(self):
@@ -61,7 +60,7 @@ class Boss:
         pass
     
     def dead_func(self):
-        self.player.Enemy.remove(self)
+        Server.player.Enemy.remove(self)
         game_world.remove_object(self)
         Stage1.Clear = True
         pass
@@ -81,8 +80,8 @@ class Boss:
         pass
     
     def do_attack(self):
-        if self.player.in_range(self,128):
-            self.player.get_attacked()
+        if Server.player.in_range(self,128):
+            Server.player.get_attacked()
         pass
     
 class Idle:
@@ -99,7 +98,7 @@ class Idle:
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
 
-        Boss.move_to_player(Boss.player)
+        Boss.move_to_player(Server.player)
         if get_time() - Boss.idle_time >= 5:
             Boss.state_machine.start(Boss.next_pattern)
             Boss.set_random_pattern()
@@ -121,7 +120,7 @@ class Attack1:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.player.is_invincibility = False
+        Server.player.is_invincibility = False
         pass
     
     @staticmethod
@@ -149,7 +148,7 @@ class Attack2:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.player.is_invincibility = False
+        Server.player.is_invincibility = False
         pass
     
     @staticmethod
@@ -192,9 +191,9 @@ class under50_skill:
         elif get_time() - Boss.start_time >= 1:
             Boss.frame = (Boss.frame + 1)
             Boss.start_time = get_time()
-            newenemy = summon.summon(Boss.player,Boss.x + random.randint(-100,100),Boss.y + random.randint(-100,100))
+            newenemy = summon.summon(Server.player,Boss.x + random.randint(-100,100),Boss.y + random.randint(-100,100))
             game_world.add_object(newenemy,1)
-            Boss.player.Enemy.append(newenemy)
+            Server.player.Enemy.append(newenemy)
 
     @staticmethod
     def draw(Boss):
