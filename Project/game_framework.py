@@ -42,6 +42,9 @@ def run(start_mode):
     global running, stack
     running = True
     stack = [start_mode]
+    
+    Server.init()
+    
     start_mode.init()
     
     global frame_time
@@ -50,11 +53,8 @@ def run(start_mode):
     
     global game_time
     game_time = get_time()
-
-    Server.player = Player.Player(None)
-    Server.PlayerUI = Player_HP(Server.player)
-    Server.TimeUI = Time()
-
+    
+    
     while running:
         stack[-1].handle_events()
         stack[-1].update()

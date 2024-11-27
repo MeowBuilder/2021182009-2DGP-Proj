@@ -107,8 +107,6 @@ class Idle:
                     Boss.state_machine.start(dash_attack)
                 else:
                     Boss.state_machine.start(Move)
-                
-            Boss.idle_time = get_time()
     
     @staticmethod
     def draw(Boss):

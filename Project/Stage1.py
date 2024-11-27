@@ -8,7 +8,7 @@ import game_world
 from Player import *
 from Server import TimeUI
 from UI import *
-from Boss import *
+from Boss_1 import *
 from summon import *
 import Map
 
@@ -33,7 +33,7 @@ def init():
     
     worldmap = Map.Map(Server.player,'Forest')
     Server.player.cur_map = worldmap
-    boss = Boss()
+    boss = Boss_1()
     Server.player.Enemy.append(boss)
     
     Server.player.cur_stage = Stage1
