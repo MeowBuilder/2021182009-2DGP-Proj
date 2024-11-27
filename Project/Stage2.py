@@ -10,6 +10,7 @@ from UI import *
 from Boss_2 import *
 from summon import *
 import Map
+import Clear as clear_title
 
 def handle_events():
     events = get_events()
@@ -63,4 +64,4 @@ def resume():
     pass
 
 def move_to_next_stage():
-    game_framework.change_mode(Stage1)
+    game_framework.change_mode(clear_title)
