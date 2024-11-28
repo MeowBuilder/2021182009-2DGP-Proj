@@ -43,8 +43,6 @@ def run(start_mode):
     running = True
     stack = [start_mode]
     
-    Server.init()
-    
     start_mode.init()
     
     global frame_time

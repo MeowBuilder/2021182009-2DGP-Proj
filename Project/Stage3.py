@@ -22,6 +22,7 @@ def handle_events():
             Server.player.handle_events(event)
 
 def init():
+    Server.init()
     global Clear
     Clear = False
     

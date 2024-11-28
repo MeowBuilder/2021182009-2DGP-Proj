@@ -24,6 +24,8 @@ def handle_events():
 
 def init():
     resize_canvas(1280,720)
+    Server.init()
+        
     
     global Clear
     Clear = False
