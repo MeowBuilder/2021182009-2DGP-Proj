@@ -1,6 +1,5 @@
 from pico2d import *
 import Server
-import Stage1
 import Stage2
 import Stage3
 import game_framework
@@ -36,6 +35,8 @@ def init():
     boss_2 = Boss_2()
     Server.player.Enemy.append(boss_2)
     
+    game_world.add_collision_pair('player:boss',Server.player,boss_2)
+    
     Server.player.cur_stage = Stage2
 
     game_world.add_object(worldmap,0)
@@ -52,7 +53,8 @@ def finish():
 
 def update():
     game_world.update()
-
+    game_world.handle_collisions()
+    
 def draw():
     clear_canvas()
     game_world.render()

@@ -87,3 +87,7 @@ class summon:
         self.x += ((Player.x-self.x)/max(1,abs(Player.x-self.x))) * self.speed * SummonSpeed * game_framework.frame_time
         self.y += ((Player.y-self.y)/max(1,abs(Player.y-self.y))) * self.speed * SummonSpeed * game_framework.frame_time
         pass
+    
+    def handle_collision(self,group,other):
+        if group == 'player:enemy':
+            pass

@@ -35,6 +35,8 @@ def init():
     boss_3 = Boss_3()
     Server.player.Enemy.append(boss_3)
     
+    game_world.add_collision_pair('player:boss',Server.player,boss_3)
+    
     Server.player.cur_stage = Stage3
 
     game_world.add_object(worldmap,0)
@@ -51,7 +53,8 @@ def finish():
 
 def update():
     game_world.update()
-
+    game_world.handle_collisions()
+    
 def draw():
     clear_canvas()
     game_world.render()

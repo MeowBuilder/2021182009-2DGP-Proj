@@ -40,6 +40,7 @@ def init():
     
     Server.player.cur_stage = Stage1
 
+    game_world.add_collision_pair('player:boss',Server.player,boss)
     
     game_world.add_object(worldmap,0)
     game_world.add_object(Server.player,2)
@@ -54,7 +55,8 @@ def finish():
 
 def update():
     game_world.update()
-
+    game_world.handle_collisions()
+    
 def draw():
     clear_canvas()
     game_world.render()

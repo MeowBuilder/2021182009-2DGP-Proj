@@ -48,6 +48,9 @@ class Boss_1:
         if not self.dead:
             self.sx,self.sy = self.x - Server.player.cur_map.window_left, self.y - Server.player.cur_map.window_bottom
             self.state_machine.draw()
+            
+            bb = (self.get_bb()[0]- Server.player.cur_map.window_left, self.get_bb()[1]- Server.player.cur_map.window_bottom, self.get_bb()[2]- Server.player.cur_map.window_left, self.get_bb()[3]- Server.player.cur_map.window_bottom)
+            draw_rectangle(*bb)
         
     def set_random_pattern(self):
         self.next_pattern = random.choice(self.patterns)
@@ -64,6 +67,9 @@ class Boss_1:
         game_world.remove_object(self)
         Stage1.Clear = True
         pass
+    
+    def get_bb(self):
+        return self.x - 64, self.y - 96, self.x + 72, self.y + 64
     
     def get_attacked(self):
         if not self.is_invincibility and not self.dead:
@@ -83,6 +89,10 @@ class Boss_1:
         if Server.player.in_range(self,128):
             Server.player.get_attacked()
         pass
+    
+    def handle_collision(self,group,other):
+        if group == 'player:boss':
+            pass
     
 class Idle:
     @staticmethod
@@ -191,10 +201,11 @@ class under50_skill:
         elif get_time() - Boss.start_time >= 1:
             Boss.frame = (Boss.frame + 1)
             Boss.start_time = get_time()
+            
             newenemy = summon.summon(Server.player,Boss.x + random.randint(-100,100),Boss.y + random.randint(-100,100))
             game_world.add_object(newenemy,1)
             Server.player.Enemy.append(newenemy)
-
+            game_world.add_collision_pair('player:enemy',Server.player,newenemy)
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:

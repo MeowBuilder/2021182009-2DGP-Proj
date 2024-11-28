@@ -40,6 +40,18 @@ class Player:
         self.sx,self.sy = self.x - self.cur_map.window_left, self.y - self.cur_map.window_bottom
         self.state_machine.draw()
         
+        bb = (self.get_bb()[0]- self.cur_map.window_left, self.get_bb()[1]- self.cur_map.window_bottom, self.get_bb()[2]- self.cur_map.window_left, self.get_bb()[3]- self.cur_map.window_bottom)
+        draw_rectangle(*bb)
+        
+    def handle_collision(self, group, other):
+        if group == 'player:boss':
+            pass
+        if group == 'player:enemy':
+            pass
+    
+    def get_bb(self):
+        return self.x - 32, self.y - 32, self.x + 32, self.y + 32
+        
     def handle_events(self,event):
         if event.type == SDL_KEYDOWN:
             if event.key == SDLK_DOWN:
