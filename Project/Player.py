@@ -3,6 +3,7 @@ import State_Machine
 import game_framework
 
 from Speed_info import *
+import game_world
 
 
 class Player:
@@ -17,7 +18,8 @@ class Player:
         self.sx,self.sy = get_canvas_width() // 2,get_canvas_height() // 2
         
         self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
-        self.speed = 1
+        self.base_speed = 1  # 기본 속도 저장
+        self.speed = self.base_speed
         self.cur_map = cur_map
         
         self.state_machine = State_Machine.StateMachine(self)
@@ -26,19 +28,39 @@ class Player:
         self.cur_stage = None
         
         self.is_invincibility = False
+        self.invincibility_timer = 0
+        self.invincibility_duration = 2.0  # 2초간 무적
+        self.is_dash_invincibility = False  # 대시 무적 상태를 따로 관리
         self.attack_side = 0
         self.HP = 5
+        self.colliding_enemies = 0  # 충돌 중인 적의 수를 추적
+        
     def update(self):
         self.state_machine.update()
+        
+        # 무적 시간 업데이트
+        if self.is_invincibility:
+            self.invincibility_timer += game_framework.frame_time
+            if self.invincibility_timer >= self.invincibility_duration:
+                self.is_invincibility = False
+                self.invincibility_timer = 0
+                
         if self.y >= self.cur_map.h:
             self.cur_stage.move_to_next_stage()
 
         self.x = clamp(0,self.x,self.cur_map.w)
         self.y = clamp(0,self.y,self.cur_map.h)
             
+        # 매 프레임마다 충돌 카운트 초기화
+        self.colliding_enemies = 0
+        self.speed = self.base_speed  # 속도 초기화
+        
     def draw(self):
         self.sx,self.sy = self.x - self.cur_map.window_left, self.y - self.cur_map.window_bottom
-        self.state_machine.draw()
+        
+        # 피격 무적일 때만 깜빡이고, 대시 무적일 때는 빡이지 않음
+        if not self.is_invincibility or self.is_dash_invincibility or int(self.invincibility_timer * 10) % 2:
+            self.state_machine.draw()
         
         bb = (self.get_bb()[0]- self.cur_map.window_left, self.get_bb()[1]- self.cur_map.window_bottom, self.get_bb()[2]- self.cur_map.window_left, self.get_bb()[3]- self.cur_map.window_bottom)
         draw_rectangle(*bb)
@@ -46,8 +68,17 @@ class Player:
     def handle_collision(self, group, other):
         if group == 'player:boss':
             pass
-        if group == 'player:enemy':
+        elif group == 'player:enemy':
+            # 적과 충돌 시작
+            self.colliding_enemies += 1
+            # 속도 감소 (충돌한 적 하나당 20% 감소)
+            self.speed = self.base_speed * max(0.2, 1 - (self.colliding_enemies * 0.2))
+        elif group == 'player:attack':
             pass
+        elif group == 'boss:attack':
+            if not self.is_invincibility:  # 플레이어가 무적 상태가 아닐 때만 데미지를 받음
+                self.get_attacked()
+                self.is_invincibility = True  # 피격 후 무적 상태 설정
     
     def get_bb(self):
         return self.x - 32, self.y - 32, self.x + 32, self.y + 32
@@ -104,21 +135,28 @@ class Player:
         self.state_machine.start(state)
 
     def get_attacked(self):
-        if not self.is_invincibility:
+        # 일반 무적이나 대시 무적 중 하나라도 있으면 데미지를 입지 않음
+        if not (self.is_invincibility or self.is_dash_invincibility):
             self.HP -= 1
             self.is_invincibility = True
+            self.invincibility_timer = 0  # 타이머 리셋
             
             if self.HP <= 0:
                 self.player_died()
             pass
 
     def do_attack(self):
-        for enemy in self.Enemy:
-            if self.in_range(enemy):
-                enemy.get_attacked()
-            pass
-        
+        # 공격 프레임일 때만 충돌 체크를 수행
+        if ((self.state_machine.cur_state == Attack_1 and 5 < self.frame < 9) or 
+            (self.state_machine.cur_state == Attack_2 and 10 < self.frame < 18)):
+            game_world.collision_pairs['player:attack'][0].clear()
+            game_world.collision_pairs['player:attack'][1].clear()
+            
+            for enemy in self.Enemy:
+                game_world.add_collision_pair('player:attack', self, enemy)
+
     def player_died(self):
+        self.HP = 5
         self.cur_stage.finish()
         self.cur_stage.init()
         pass
@@ -206,6 +244,9 @@ class Attack_1:
     
     @staticmethod
     def exit(player):
+        # 공격 상태가 끝날 때 collision pairs 초기화
+        game_world.collision_pairs['player:attack'][0].clear()
+        game_world.collision_pairs['player:attack'][1].clear()
         for enemy in player.Enemy:
             enemy.is_invincibility = False
         pass
@@ -248,6 +289,9 @@ class Attack_2:
     
     @staticmethod
     def exit(player):
+        # 공격 상태가 끝날 때 collision pairs 초기화
+        game_world.collision_pairs['player:attack'][0].clear()
+        game_world.collision_pairs['player:attack'][1].clear()
         for enemy in player.Enemy:
             enemy.is_invincibility = False
         pass
@@ -291,13 +335,19 @@ class Dash:
     @staticmethod
     def enter(player):
         player.is_invincibility = True
+        player.is_dash_invincibility = True
+        player.invincibility_timer = 0
         player.frame = 0
-        player.speed += 2
+        player.base_speed += 2  # base_speed를 수정
+        player.speed = player.base_speed
         
     @staticmethod
     def exit(player):
         player.is_invincibility = False
-        player.speed -= 2
+        player.is_dash_invincibility = False
+        player.invincibility_timer = 0
+        player.base_speed -= 2  # base_speed를 수정
+        player.speed = player.base_speed
         player.frame = 0
         pass
     

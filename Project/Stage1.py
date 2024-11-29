@@ -26,21 +26,21 @@ def init():
     resize_canvas(1280,720)
     Server.init()
         
-    
     global Clear
     Clear = False
 
     Server.player.y = 0
 
-    
     worldmap = Map.Map(Server.player,'Forest')
     Server.player.cur_map = worldmap
     boss = Boss_1()
+    Server.player.Enemy.clear()
     Server.player.Enemy.append(boss)
     
     Server.player.cur_stage = Stage1
 
     game_world.add_collision_pair('player:boss',Server.player,boss)
+    game_world.add_attack_collision_pairs()
     
     game_world.add_object(worldmap,0)
     game_world.add_object(Server.player,2)

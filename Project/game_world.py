@@ -39,10 +39,11 @@ def remove_object(o):
 
 
 def clear():
-    global objects
-
+    global objects, collision_pairs
     objects = [[] for _ in range(4)]
-    
+    collision_pairs = {}
+
+
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a.get_bb()
     left_b, bottom_b, right_b, top_b = b.get_bb()
@@ -73,3 +74,9 @@ def handle_collisions():
                     a.handle_collision(group, b)
                     b.handle_collision(group, a)
 
+
+def add_attack_collision_pairs():
+    if 'player:attack' not in collision_pairs:
+        collision_pairs['player:attack'] = [[], []]
+    if 'boss:attack' not in collision_pairs:
+        collision_pairs['boss:attack'] = [[], []]

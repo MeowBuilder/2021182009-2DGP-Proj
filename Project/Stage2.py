@@ -36,9 +36,10 @@ def init():
     Server.player.Enemy.append(boss_2)
     
     game_world.add_collision_pair('player:boss',Server.player,boss_2)
+    game_world.add_attack_collision_pairs()
     
     Server.player.cur_stage = Stage2
-
+    
     game_world.add_object(worldmap,0)
     game_world.add_object(Server.player,2)
     game_world.add_object(boss_2,1)

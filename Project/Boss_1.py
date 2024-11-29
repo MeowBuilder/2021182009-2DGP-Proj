@@ -31,7 +31,10 @@ class Boss_1:
         self.idle_time = 0
         self.dir = 0
         self.is_invincibility = False
-
+        self.invincibility_timer = 0
+        self.invincibility_duration = 0.5  # 0.5초 무적
+        self.is_skill_invincibility = False  # 스킬 사용 시 무적 상태를 따로 관리
+        
         self.do_under50 = False
         self.dead = False
         
@@ -40,17 +43,24 @@ class Boss_1:
         pass
 
     def update(self):
+        if self.is_invincibility:
+            self.invincibility_timer += game_framework.frame_time
+            if self.invincibility_timer >= self.invincibility_duration:
+                self.is_invincibility = False
+                self.invincibility_timer = 0
+                
         if not len(Server.player.Enemy) == 1:
             self.is_invincibility = True
         if not self.dead:
             self.state_machine.update()
     def draw(self):
-        if not self.dead:
-            self.sx,self.sy = self.x - Server.player.cur_map.window_left, self.y - Server.player.cur_map.window_bottom
-            self.state_machine.draw()
-            
-            bb = (self.get_bb()[0]- Server.player.cur_map.window_left, self.get_bb()[1]- Server.player.cur_map.window_bottom, self.get_bb()[2]- Server.player.cur_map.window_left, self.get_bb()[3]- Server.player.cur_map.window_bottom)
-            draw_rectangle(*bb)
+        if not self.is_invincibility or self.is_skill_invincibility or int(self.invincibility_timer * 10) % 2:
+            if not self.dead:
+                self.sx,self.sy = self.x - Server.player.cur_map.window_left, self.y - Server.player.cur_map.window_bottom
+                self.state_machine.draw()
+                
+                bb = (self.get_bb()[0]- Server.player.cur_map.window_left, self.get_bb()[1]- Server.player.cur_map.window_bottom, self.get_bb()[2]- Server.player.cur_map.window_left, self.get_bb()[3]- Server.player.cur_map.window_bottom)
+                draw_rectangle(*bb)
         
     def set_random_pattern(self):
         self.next_pattern = random.choice(self.patterns)
@@ -72,32 +82,45 @@ class Boss_1:
         return self.x - 64, self.y - 96, self.x + 72, self.y + 64
     
     def get_attacked(self):
-        if not self.is_invincibility and not self.dead:
-            print(f'BOSS HP : {self.HP}')
-            self.HP -= 1
-            self.is_invincibility = True
+        print(f'BOSS HP : {self.HP}')
+        self.HP -= 1
+        self.is_invincibility = True
+        self.invincibility_timer = 0  # 타이머 리셋
             
-            if self.HP == 0:
-                self.state_machine.start(Die)
-            elif self.HP <= self.MAXHP/2 and not self.do_under50:
-                self.state_machine.start(under50_skill)
-                self.do_under50 = True
-            pass
+        if self.HP == 0:
+            self.state_machine.start(Die)
+        elif self.HP <= self.MAXHP/2 and not self.do_under50:
+            self.state_machine.start(under50_skill)
+            self.do_under50 = True
         pass
     
     def do_attack(self):
-        if Server.player.in_range(self,128):
-            Server.player.get_attacked()
-        pass
-    
-    def handle_collision(self,group,other):
-        if group == 'player:boss':
+        if ((self.state_machine.cur_state == Attack1 and 5 < self.frame < 9) or 
+            (self.state_machine.cur_state == Attack2 and 4 < self.frame < 7)):
+            game_world.collision_pairs['boss:attack'][0].clear()
+            game_world.collision_pairs['boss:attack'][1].clear()
+            game_world.add_collision_pair('boss:attack', self, Server.player)
+
+    def handle_collision(self, group, other):
+        if group == 'player:attack':
+            if not (self.is_invincibility or self.is_skill_invincibility):
+                self.get_attacked()
+        elif group == 'boss:attack':
             pass
-    
+
+    def get_attack_bb(self):
+        if self.state_machine.cur_state == Attack1 or self.state_machine.cur_state == Attack2:
+            return self.x - 64, self.y - 64, self.x + 64, self.y + 64
+        elif self.state_machine.cur_state == under50_skill:
+            return self.x - 96, self.y - 96, self.x + 96, self.y + 96
+
 class Idle:
     @staticmethod
     def enter(Boss):
         Boss.idle_time = get_time()
+        Boss.is_invincibility = False
+        Boss.is_skill_invincibility = False
+        Boss.invincibility_timer = 0
         pass
     
     @staticmethod
@@ -129,6 +152,9 @@ class Attack1:
     
     @staticmethod
     def exit(Boss):
+        # 공격 상태가 끝날 때 collision pairs 초기화
+        game_world.collision_pairs['boss:attack'][0].clear()
+        game_world.collision_pairs['boss:attack'][1].clear()
         Boss.frame = 0
         Server.player.is_invincibility = False
         pass
@@ -157,6 +183,9 @@ class Attack2:
     
     @staticmethod
     def exit(Boss):
+        # 공격 상태가 끝날 때 collision pairs 초기화
+        game_world.collision_pairs['boss:attack'][0].clear()
+        game_world.collision_pairs['boss:attack'][1].clear()
         Boss.frame = 0
         Server.player.is_invincibility = False
         pass
@@ -184,19 +213,22 @@ class under50_skill:
         print('enter under50')
         Boss.frame = 0
         Boss.is_invincibility = True
+        Boss.is_skill_invincibility = True
         Boss.start_time = get_time()
-        pass
 
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
         Boss.is_invincibility = False
-        pass
+        Boss.is_skill_invincibility = False
+        Boss.invincibility_timer = 0
 
     @staticmethod
     def do(Boss):
-        Boss.is_invincibility = True
         if get_time() - Boss.start_time >= 1 and Boss.frame >= 4:
+            Boss.is_invincibility = False
+            Boss.is_skill_invincibility = False
+            Boss.invincibility_timer = 0
             Boss.state_machine.start(Idle)
         elif get_time() - Boss.start_time >= 1:
             Boss.frame = (Boss.frame + 1)
@@ -206,6 +238,7 @@ class under50_skill:
             game_world.add_object(newenemy,1)
             Server.player.Enemy.append(newenemy)
             game_world.add_collision_pair('player:enemy',Server.player,newenemy)
+
     @staticmethod
     def draw(Boss):
         if Boss.dir < 0:

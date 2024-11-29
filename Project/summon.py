@@ -68,6 +68,9 @@ class summon:
             else:
                 self.Death_sprite.clip_composite_draw(int(self.frame)*50,0,50,50,0,'w',self.sx ,self.sy + 24 ,128,128)
             pass
+        
+        bb = (self.get_bb()[0]- self.player.cur_map.window_left, self.get_bb()[1]- self.player.cur_map.window_bottom, self.get_bb()[2]- self.player.cur_map.window_left, self.get_bb()[3]- self.player.cur_map.window_bottom)
+        draw_rectangle(*bb)
     
     def get_attacked(self):
         if not self.is_invincibility and not self.dead:
@@ -88,6 +91,11 @@ class summon:
         self.y += ((Player.y-self.y)/max(1,abs(Player.y-self.y))) * self.speed * SummonSpeed * game_framework.frame_time
         pass
     
+    def get_bb(self):
+        return self.x - 32, self.y - 32, self.x + 32, self.y + 32
+    
     def handle_collision(self,group,other):
         if group == 'player:enemy':
+            if not self.is_invincibility:
+                self.get_attacked()
             pass

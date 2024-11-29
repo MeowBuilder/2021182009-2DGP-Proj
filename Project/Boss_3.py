@@ -35,6 +35,9 @@ class Boss_3:
         self.idle_time = 0
         self.dir = 0
         self.is_invincibility = False
+        self.invincibility_timer = 0
+        self.invincibility_duration = 0.5
+        self.is_skill_invincibility = False
 
         self.do_under50 = False
         self.dead = False
@@ -57,15 +60,24 @@ class Boss_3:
         pass
 
     def update(self):
+        if self.is_invincibility:
+            self.invincibility_timer += game_framework.frame_time
+            if self.invincibility_timer >= self.invincibility_duration:
+                self.is_invincibility = False
+                self.invincibility_timer = 0
+                
+        if not len(Server.player.Enemy) == 1:
+            self.is_invincibility = True
         if not self.dead:
             self.state_machine.update()
 
     def draw(self):
-        if not self.dead:
-            self.sx,self.sy = self.x - Server.player.cur_map.window_left, self.y - Server.player.cur_map.window_bottom
-            self.state_machine.draw()
-            bb = (self.get_bb()[0]- Server.player.cur_map.window_left, self.get_bb()[1]- Server.player.cur_map.window_bottom, self.get_bb()[2]- Server.player.cur_map.window_left, self.get_bb()[3]- Server.player.cur_map.window_bottom)
-            draw_rectangle(*bb)
+        if not self.is_invincibility or self.is_skill_invincibility or int(self.invincibility_timer * 10) % 2:
+            if not self.dead:
+                self.sx,self.sy = self.x - Server.player.cur_map.window_left, self.y - Server.player.cur_map.window_bottom
+                self.state_machine.draw()
+                bb = (self.get_bb()[0]- Server.player.cur_map.window_left, self.get_bb()[1]- Server.player.cur_map.window_bottom, self.get_bb()[2]- Server.player.cur_map.window_left, self.get_bb()[3]- Server.player.cur_map.window_bottom)
+                draw_rectangle(*bb)
         
     def set_random_pattern(self):
         self.next_pattern = random.choice(self.patterns)
@@ -87,18 +99,16 @@ class Boss_3:
         return self.x - 56, self.y - 224, self.x + 56, self.y + 48
     
     def get_attacked(self):
-        if not self.is_invincibility and not self.dead:
-            print(f'BOSS HP : {self.HP}')
-            self.HP -= 1
-            self.is_invincibility = True
+        print(f'BOSS HP : {self.HP}')
+        self.HP -= 1
+        self.is_invincibility = True
+        self.invincibility_timer = 0
             
-            if self.HP == 0:
-                self.state_machine.start(Die)
-            elif self.HP <= self.MAXHP/2 and not self.do_under50:
-                self.state_machine.start(under50_skill)
-                self.do_under50 = True
-            pass
-        pass
+        if self.HP == 0:
+            self.state_machine.start(Die)
+        elif self.HP <= self.MAXHP/2 and not self.do_under50:
+            self.state_machine.start(under50_skill)
+            self.do_under50 = True
     
     def do_attack(self):
         if Server.player.in_range(self,128):
@@ -106,7 +116,10 @@ class Boss_3:
         pass
     
     def handle_collision(self,group,other):
-        if group == 'player:boss':
+        if group == 'player:attack':
+            if not (self.is_invincibility or self.is_skill_invincibility):
+                self.get_attacked()
+        elif group == 'boss:attack':
             pass
     
 class Idle:
