@@ -49,6 +49,7 @@ class Boss_2:
                 
         if not len(Server.player.Enemy) == 1:
             self.is_invincibility = True
+        
         if not self.dead:
             self.state_machine.update()
             
@@ -101,9 +102,15 @@ class Boss_2:
             game_world.collision_pairs['boss:attack'][1].clear()
             game_world.add_collision_pair('boss:attack', self, Server.player)
 
+    def end_attack(self):
+        game_world.collision_pairs['boss:attack'][0].clear()
+        game_world.collision_pairs['boss:attack'][1].clear()
+    
     def handle_collision(self, group, other):
         if group == 'player:attack':
-            if not (self.is_invincibility or self.is_skill_invincibility):
+            if self.state_machine.cur_state == counter:
+                self.state_machine.start(counter_attack)
+            elif not (self.is_invincibility or self.is_skill_invincibility):
                 self.get_attacked()
         elif group == 'boss:attack':
             
@@ -178,7 +185,7 @@ class Attack1:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Server.player.is_invincibility = False
+        Boss.end_attack()
         pass
     
     @staticmethod
@@ -240,7 +247,7 @@ class counter_attack:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Server.player.is_invincibility = False
+        Boss.end_attack()
         pass
     
     @staticmethod
@@ -269,7 +276,6 @@ class under50_skill:
         Boss.attack_time = get_time()
         Boss.is_invincibility = True
         Boss.is_skill_invincibility = True
-        Server.player.is_invincibility = False  # 시작할 때는 플레이어 무적 해제
         pass
     
     @staticmethod
@@ -277,9 +283,8 @@ class under50_skill:
         Boss.frame = 0
         Boss.is_invincibility = False
         Boss.is_skill_invincibility = False
-        Boss.invincibility_timer = 0
-        Server.player.is_invincibility = False
         Boss.patterns.append(dash_attack)
+        Boss.end_attack()
         pass
     
     @staticmethod
@@ -308,11 +313,9 @@ class under50_skill:
             Boss.attack_count += 1
             Boss.frame = 0
             Boss.in_range = False
+            Boss.end_attack()
             
             if Boss.attack_count >= 5:
-                Boss.is_invincibility = False
-                Boss.is_skill_invincibility = False
-                Boss.invincibility_timer = 0
                 Boss.state_machine.start(Idle)
     
     @staticmethod
@@ -332,8 +335,8 @@ class dash_attack:
     
     @staticmethod
     def exit(Boss):
-        Server.player.is_invincibility = False
         Boss.frame = 0
+        Boss.end_attack()
         pass
     
     @staticmethod

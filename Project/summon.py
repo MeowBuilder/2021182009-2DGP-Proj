@@ -24,7 +24,8 @@ class summon:
         self.sx, self.sy = 0,0
         self.dead = False
         self.is_invincibility = False
-        self.invincibility_time = 0
+        self.invincibility_timer = 0
+        self.invincibility_duration = 0.5
         self.speed = 1
         self.HP = 5
         self.dir = 0
@@ -44,6 +45,13 @@ class summon:
         elif not self.dead:
             self.move_to_player(self.player)
             self.frame = self.frame % 4
+            
+            if self.is_invincibility:
+                self.invincibility_timer += game_framework.frame_time
+                if self.invincibility_timer >= self.invincibility_duration:
+                    self.is_invincibility = False
+                    self.invincibility_timer = 0
+                    
         elif self.dead:
             if int(self.frame) == 6:
                 self.player.Enemy.remove(self)
@@ -73,17 +81,16 @@ class summon:
         draw_rectangle(*bb)
     
     def get_attacked(self):
-        if not self.is_invincibility and not self.dead:
-            self.HP -= 1
-            if not self.is_invincibility:
-                self.is_invincibility = True
-                self.invincibility_time = get_time()
-            print(f'Summon HP : {self.HP}')
-            
-            if self.HP == 0:
-                self.dead = True
-                self.Appear_time = get_time()
-            pass
+        self.HP -= 1
+        if not self.is_invincibility:
+            self.is_invincibility = True
+            self.invincibility_timer = 0
+        print(f'Summon HP : {self.HP}')
+        
+        if self.HP == 0:
+            self.dead = True
+            self.Appear_time = get_time()
+        pass
         
     def move_to_player(self,Player):
         self.dir = ((Player.x-self.x)/max(1,abs(Player.x-self.x)))
@@ -95,7 +102,7 @@ class summon:
         return self.x - 32, self.y - 32, self.x + 32, self.y + 32
     
     def handle_collision(self,group,other):
-        if group == 'player:enemy':
+        if group == 'player:attack':
             if not self.is_invincibility:
                 self.get_attacked()
             pass

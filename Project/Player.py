@@ -45,7 +45,7 @@ class Player:
                 self.is_invincibility = False
                 self.invincibility_timer = 0
                 
-        if self.y >= self.cur_map.h:
+        if self.y >= self.cur_map.h and self.cur_stage.Clear:
             self.cur_stage.move_to_next_stage()
 
         self.x = clamp(0,self.x,self.cur_map.w)
@@ -69,16 +69,13 @@ class Player:
         if group == 'player:boss':
             pass
         elif group == 'player:enemy':
-            # 적과 충돌 시작
             self.colliding_enemies += 1
-            # 속도 감소 (충돌한 적 하나당 20% 감소)
             self.speed = self.base_speed * max(0.2, 1 - (self.colliding_enemies * 0.2))
         elif group == 'player:attack':
             pass
         elif group == 'boss:attack':
             if not self.is_invincibility:  # 플레이어가 무적 상태가 아닐 때만 데미지를 받음
                 self.get_attacked()
-                self.is_invincibility = True  # 피격 후 무적 상태 설정
     
     def get_bb(self):
         return self.x - 32, self.y - 32, self.x + 32, self.y + 32
@@ -146,7 +143,6 @@ class Player:
             pass
 
     def do_attack(self):
-        # 공격 프레임일 때만 충돌 체크를 수행
         if ((self.state_machine.cur_state == Attack_1 and 5 < self.frame < 9) or 
             (self.state_machine.cur_state == Attack_2 and 10 < self.frame < 18)):
             game_world.collision_pairs['player:attack'][0].clear()
@@ -154,6 +150,10 @@ class Player:
             
             for enemy in self.Enemy:
                 game_world.add_collision_pair('player:attack', self, enemy)
+                
+    def end_attack(self):
+        game_world.collision_pairs['player:attack'][0].clear()
+        game_world.collision_pairs['player:attack'][1].clear()
 
     def player_died(self):
         self.HP = 5
@@ -244,11 +244,7 @@ class Attack_1:
     
     @staticmethod
     def exit(player):
-        # 공격 상태가 끝날 때 collision pairs 초기화
-        game_world.collision_pairs['player:attack'][0].clear()
-        game_world.collision_pairs['player:attack'][1].clear()
-        for enemy in player.Enemy:
-            enemy.is_invincibility = False
+        player.end_attack()
         pass
     
     @staticmethod
@@ -289,11 +285,7 @@ class Attack_2:
     
     @staticmethod
     def exit(player):
-        # 공격 상태가 끝날 때 collision pairs 초기화
-        game_world.collision_pairs['player:attack'][0].clear()
-        game_world.collision_pairs['player:attack'][1].clear()
-        for enemy in player.Enemy:
-            enemy.is_invincibility = False
+        player.end_attack()
         pass
     
     @staticmethod
@@ -334,18 +326,14 @@ class Attack_2:
 class Dash:
     @staticmethod
     def enter(player):
-        player.is_invincibility = True
         player.is_dash_invincibility = True
-        player.invincibility_timer = 0
         player.frame = 0
         player.base_speed += 2  # base_speed를 수정
         player.speed = player.base_speed
         
     @staticmethod
     def exit(player):
-        player.is_invincibility = False
         player.is_dash_invincibility = False
-        player.invincibility_timer = 0
         player.base_speed -= 2  # base_speed를 수정
         player.speed = player.base_speed
         player.frame = 0

@@ -50,9 +50,11 @@ class Boss_1:
                 self.invincibility_timer = 0
                 
         if not len(Server.player.Enemy) == 1:
-            self.is_invincibility = True
+            self.is_skill_invincibility = True
+            
         if not self.dead:
             self.state_machine.update()
+
     def draw(self):
         if not self.is_invincibility or self.is_skill_invincibility or int(self.invincibility_timer * 10) % 2:
             if not self.dead:
@@ -101,6 +103,10 @@ class Boss_1:
             game_world.collision_pairs['boss:attack'][1].clear()
             game_world.add_collision_pair('boss:attack', self, Server.player)
 
+    def end_attack(self):
+        game_world.collision_pairs['boss:attack'][0].clear()
+        game_world.collision_pairs['boss:attack'][1].clear()
+    
     def handle_collision(self, group, other):
         if group == 'player:attack':
             if not (self.is_invincibility or self.is_skill_invincibility):
@@ -152,11 +158,8 @@ class Attack1:
     
     @staticmethod
     def exit(Boss):
-        # 공격 상태가 끝날 때 collision pairs 초기화
-        game_world.collision_pairs['boss:attack'][0].clear()
-        game_world.collision_pairs['boss:attack'][1].clear()
+        Boss.end_attack()
         Boss.frame = 0
-        Server.player.is_invincibility = False
         pass
     
     @staticmethod
@@ -183,11 +186,8 @@ class Attack2:
     
     @staticmethod
     def exit(Boss):
-        # 공격 상태가 끝날 때 collision pairs 초기화
-        game_world.collision_pairs['boss:attack'][0].clear()
-        game_world.collision_pairs['boss:attack'][1].clear()
+        Boss.end_attack()
         Boss.frame = 0
-        Server.player.is_invincibility = False
         pass
     
     @staticmethod
@@ -212,7 +212,6 @@ class under50_skill:
     def enter(Boss):
         print('enter under50')
         Boss.frame = 0
-        Boss.is_invincibility = True
         Boss.is_skill_invincibility = True
         Boss.start_time = get_time()
 

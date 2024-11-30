@@ -115,6 +115,10 @@ class Boss_3:
             Server.player.get_attacked()
         pass
     
+    def end_attack(self):
+        game_world.collision_pairs['boss:attack'][0].clear()
+        game_world.collision_pairs['boss:attack'][1].clear()
+    
     def handle_collision(self,group,other):
         if group == 'player:attack':
             if not (self.is_invincibility or self.is_skill_invincibility):
@@ -156,7 +160,7 @@ class Attack1:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Server.player.is_invincibility = False
+        Boss.end_attack()
         pass
     
     @staticmethod
@@ -182,7 +186,7 @@ class Attack2:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Server.player.is_invincibility = False
+        Boss.end_attack()
         pass
     
     @staticmethod
@@ -208,7 +212,7 @@ class Attack3:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Server.player.is_invincibility = False
+        Boss.end_attack()
         pass
     
     @staticmethod
@@ -234,7 +238,7 @@ class Attack4:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Server.player.is_invincibility = False
+        Boss.end_attack()
         pass
     
     @staticmethod
@@ -260,7 +264,7 @@ class Attack5:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Server.player.is_invincibility = False
+        Boss.end_attack()
         pass
     
     @staticmethod
