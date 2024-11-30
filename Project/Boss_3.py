@@ -9,6 +9,7 @@ import game_world
 import Stage1
 
 from Speed_info import *
+from Spike import Spike
 
 class Boss_3:
     idle_sprite = None
@@ -30,8 +31,9 @@ class Boss_3:
         self.sx, self.sy = 0,0
         self.speed = 1
         self.cur_pattern = Idle
-        self.next_pattern = Attack1
+        self.next_pattern = Attack5
         self.patterns = [Attack1,Attack2,Attack3,Attack4,Attack5]
+        self.pattern_num = 0
         self.idle_time = 0
         self.dir = 0
         self.is_invincibility = False
@@ -39,7 +41,6 @@ class Boss_3:
         self.invincibility_duration = 0.5
         self.is_skill_invincibility = False
 
-        self.do_under50 = False
         self.dead = False
         
         self.state_machine = State_Machine.StateMachine(self)
@@ -65,22 +66,21 @@ class Boss_3:
             if self.invincibility_timer >= self.invincibility_duration:
                 self.is_invincibility = False
                 self.invincibility_timer = 0
-                
-        if not len(Server.player.Enemy) == 1:
-            self.is_invincibility = True
+
         if not self.dead:
             self.state_machine.update()
 
     def draw(self):
         if not self.is_invincibility or self.is_skill_invincibility or int(self.invincibility_timer * 10) % 2:
             if not self.dead:
-                self.sx,self.sy = self.x - Server.player.cur_map.window_left, self.y - Server.player.cur_map.window_bottom
+                self.sx,self.sy = self.x - Server.Map.window_left, self.y - Server.Map.window_bottom
                 self.state_machine.draw()
-                bb = (self.get_bb()[0]- Server.player.cur_map.window_left, self.get_bb()[1]- Server.player.cur_map.window_bottom, self.get_bb()[2]- Server.player.cur_map.window_left, self.get_bb()[3]- Server.player.cur_map.window_bottom)
+                bb = (self.get_bb()[0]- Server.Map.window_left, self.get_bb()[1]- Server.Map.window_bottom, self.get_bb()[2]- Server.Map.window_left, self.get_bb()[3]- Server.Map.window_bottom)
                 draw_rectangle(*bb)
         
     def set_random_pattern(self):
-        self.next_pattern = random.choice(self.patterns)
+        self.next_pattern = Attack5
+        #self.next_pattern = random.choice(self.patterns)
         pass
 
     def move_to_player(self,Player):
@@ -106,9 +106,6 @@ class Boss_3:
             
         if self.HP == 0:
             self.state_machine.start(Die)
-        elif self.HP <= self.MAXHP/2 and not self.do_under50:
-            self.state_machine.start(under50_skill)
-            self.do_under50 = True
     
     def do_attack(self):
         if Server.player.in_range(self,128):
@@ -259,17 +256,24 @@ class Attack5:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
+        Boss.spike_timer = 0
+        Boss.spike_delay = 0.5
         pass
     
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.end_attack()
         pass
     
     @staticmethod
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+        
+        Boss.spike_timer += game_framework.frame_time
+        if Boss.spike_timer >= Boss.spike_delay:
+            Boss.spike_timer = 0
+            spike = Spike(Server.player.x, Server.player.y)
+            game_world.add_object(spike, 1)
 
         if int(Boss.frame) == len(Boss.attack5_sprite):
             Boss.state_machine.start(Idle)
@@ -281,34 +285,7 @@ class Attack5:
         else:
             Boss.attack5_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'w',Boss.sx,Boss.sy,512,512)
 
-class under50_skill:
-    @staticmethod
-    def enter(Boss):
-        print('enter under50')
-        Boss.frame = 0
-        Boss.is_invincibility = True
-        Boss.start_time = get_time()
-        pass
-
-    @staticmethod
-    def exit(Boss):
-        Boss.frame = 0
-        Boss.is_invincibility = False
-        pass
-
-    @staticmethod
-    def do(Boss):
-        Boss.is_invincibility = True
-
-    @staticmethod
-    def draw(Boss):
-        if Boss.dir < 0:
-            Boss.under50_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'h',Boss.sx,Boss.sy,512,512)
-        else:
-            Boss.under50_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'w',Boss.sx,Boss.sy,512,512)
-
-
-            
+         
 class Die:
     @staticmethod
     def enter(Boss):
