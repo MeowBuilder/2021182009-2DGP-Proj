@@ -9,7 +9,7 @@ import game_world
 import Stage1
 
 from Speed_info import *
-from Spike import Spike
+from Boss_3_Attack import Spike
 
 class Boss_3:
     idle_sprite = None
@@ -55,8 +55,8 @@ class Boss_3:
             Boss_3.attack3_sprite = [load_image('./Asset/Boss_3/attack3/attack%d.png'%i) for i in range(1,71)]
             Boss_3.attack4_sprite = [load_image('./Asset/Boss_3/attack4/attack%d.png'%i) for i in range(4,46)]
             Boss_3.attack5_sprite = [load_image('./Asset/Boss_3/attack5/attack%d.png'%i) for i in range(1,43)]
-            Boss_3.teleport_in_sprite = [load_image('./Asset/Boss_3/teleport in/teleport in%d.png'%i) for i in range(1,31)]
-            Boss_3.teleport_out_sprite = [load_image('./Asset/Boss_3/teleport out/teleport out%d.png'%i) for i in range(1,26)]
+            Boss_3.teleport_in_sprite = [load_image('./Asset/Boss_3/teleport in/teleport in (%d).png'%i) for i in range(1,31)]
+            Boss_3.teleport_out_sprite = [load_image('./Asset/Boss_3/teleport out/teleport out (%d).png'%i) for i in range(1,26)]
             Boss_3.death_sprite = [load_image('./Asset/Boss_3/death/death%d.png'%i) for i in range(1,66)]
         pass
 
