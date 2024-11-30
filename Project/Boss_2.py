@@ -56,11 +56,11 @@ class Boss_2:
     def draw(self):
         if not self.is_invincibility or self.is_skill_invincibility or int(self.invincibility_timer * 10) % 2:
             if not self.dead:
-                self.sx,self.sy = self.x - Server.player.cur_map.window_left, self.y - Server.player.cur_map.window_bottom
+                self.sx,self.sy = self.x - Server.Map.window_left, self.y - Server.Map.window_bottom
                 self.state_machine.draw()
                 
-                bb = (self.get_bb()[0]- Server.player.cur_map.window_left, self.get_bb()[1]- Server.player.cur_map.window_bottom,
-                      self.get_bb()[2]- Server.player.cur_map.window_left, self.get_bb()[3]- Server.player.cur_map.window_bottom)
+                bb = (self.get_bb()[0]- Server.Map.window_left, self.get_bb()[1]- Server.Map.window_bottom,
+                      self.get_bb()[2]- Server.Map.window_left, self.get_bb()[3]- Server.Map.window_bottom)
                 draw_rectangle(*bb)
                 
     def set_random_pattern(self):

@@ -29,8 +29,8 @@ def init():
     Server.player.y = 0
     Server.player.Enemy.clear()
         
-    worldmap = Map.Map(Server.player,'Dungeon')
-    Server.player.cur_map = worldmap
+    worldmap = Map.Map('Dungeon')
+    Server.Map = worldmap
 
     boss_2 = Boss_2()
     Server.player.Enemy.append(boss_2)

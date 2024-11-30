@@ -7,6 +7,8 @@ player = None
 PlayerUI = None
 TimeUI = None
 
+Map = None
+
 def is_None():
     return player is None and PlayerUI is None and TimeUI is None
 
@@ -15,7 +17,7 @@ def init():
     global PlayerUI
     global TimeUI
     if is_None():
-        player = Player.Player(None)
+        player = Player.Player()
         PlayerUI = Player_HP(player)
         TimeUI = Time()
 

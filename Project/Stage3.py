@@ -1,4 +1,5 @@
 from pico2d import *
+import Spike
 import Stage3
 import Server
 import game_framework
@@ -29,8 +30,8 @@ def init():
     Server.player.y = 0
     Server.player.Enemy.clear()
         
-    worldmap = Map.Map(Server.player,'Dungeon')
-    Server.player.cur_map = worldmap
+    worldmap = Map.Map('Dungeon')
+    Server.Map = worldmap
 
     boss_3 = Boss_3()
     Server.player.Enemy.append(boss_3)

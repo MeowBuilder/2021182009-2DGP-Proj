@@ -1,6 +1,6 @@
 import time
 
-from pico2d import get_time
+from pico2d import get_time, delay
 
 import Server
 import Player

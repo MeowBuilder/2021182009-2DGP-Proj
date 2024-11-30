@@ -1,4 +1,5 @@
 from pico2d import *
+import Server
 import State_Machine
 import game_framework
 
@@ -8,7 +9,7 @@ import game_world
 
 class Player:
     Enemy = []
-    def __init__(self,cur_map):
+    def __init__(self):
         self.movement_sprite = [load_image('./Asset/Character/Front Movement.png'),load_image('./Asset/Character/Back Movement.png'),load_image('./Asset/Character/Side Movement.png')]
         self.attack_sprite = [load_image('./Asset/Character/Front ConsecutiveSlash.png'),load_image('./Asset/Character/Back ConsecutiveSlash.png'),load_image('./Asset/Character/Side ConsecutiveSlash.png')]
         self.dash_sprite = [load_image('./Asset/Character/Front DashnRoll.png'),load_image('./Asset/Character/Back Dash.png'),load_image('./Asset/Character/Side Dash.png')]
@@ -20,7 +21,6 @@ class Player:
         self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
         self.base_speed = 1  # 기본 속도 저장
         self.speed = self.base_speed
-        self.cur_map = cur_map
         
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
@@ -45,37 +45,34 @@ class Player:
                 self.is_invincibility = False
                 self.invincibility_timer = 0
                 
-        if self.y >= self.cur_map.h and self.cur_stage.Clear:
+        if self.y >= Server.Map.h and self.cur_stage.Clear:
             self.cur_stage.move_to_next_stage()
 
-        self.x = clamp(0,self.x,self.cur_map.w)
-        self.y = clamp(0,self.y,self.cur_map.h)
+        self.x = clamp(0,self.x,Server.Map.w)
+        self.y = clamp(0,self.y,Server.Map.h)
             
         # 매 프레임마다 충돌 카운트 초기화
         self.colliding_enemies = 0
         self.speed = self.base_speed  # 속도 초기화
         
     def draw(self):
-        self.sx,self.sy = self.x - self.cur_map.window_left, self.y - self.cur_map.window_bottom
+        self.sx,self.sy = self.x - Server.Map.window_left, self.y - Server.Map.window_bottom
         
         # 피격 무적일 때만 깜빡이고, 대시 무적일 때는 빡이지 않음
         if not self.is_invincibility or self.is_dash_invincibility or int(self.invincibility_timer * 10) % 2:
             self.state_machine.draw()
         
-        bb = (self.get_bb()[0]- self.cur_map.window_left, self.get_bb()[1]- self.cur_map.window_bottom, self.get_bb()[2]- self.cur_map.window_left, self.get_bb()[3]- self.cur_map.window_bottom)
+        bb = (self.get_bb()[0]- Server.Map.window_left, self.get_bb()[1]- Server.Map.window_bottom, self.get_bb()[2]- Server.Map.window_left, self.get_bb()[3]- Server.Map.window_bottom)
         draw_rectangle(*bb)
         
     def handle_collision(self, group, other):
-        if group == 'player:boss':
-            pass
-        elif group == 'player:enemy':
+        if group == 'player:enemy':
             self.colliding_enemies += 1
             self.speed = self.base_speed * max(0.2, 1 - (self.colliding_enemies * 0.2))
-        elif group == 'player:attack':
-            pass
         elif group == 'boss:attack':
-            if not self.is_invincibility:  # 플레이어가 무적 상태가 아닐 때만 데미지를 받음
-                self.get_attacked()
+            self.get_attacked()
+        elif group == 'player:spike':
+            self.get_attacked()
     
     def get_bb(self):
         return self.x - 32, self.y - 32, self.x + 32, self.y + 32
