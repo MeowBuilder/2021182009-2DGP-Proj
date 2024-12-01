@@ -73,7 +73,19 @@ class Player:
             self.get_attacked()
         elif group == 'player:spike':
             self.get_attacked()
-    
+        elif group == 'player:black_hole':
+            dx = other.x - self.x
+            dy = other.y - self.y
+            distance = max(1, ((dx ** 2 + dy ** 2) ** 0.5))
+            
+            pull_force = 15.0 * PIXEL_PER_METER / distance
+            
+            dir_x = dx / distance 
+            dir_y = dy / distance
+            
+            self.x += dir_x * pull_force * game_framework.frame_time
+            self.y += dir_y * pull_force * game_framework.frame_time
+            pass
     def get_bb(self):
         return self.x - 32, self.y - 32, self.x + 32, self.y + 32
         

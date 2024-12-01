@@ -30,9 +30,11 @@ class Boss_3:
         self.x, self.y = 640, 720
         self.sx, self.sy = 0,0
         self.speed = 1
+        
         self.cur_pattern = Idle
-        self.next_pattern = Attack5
+        self.next_pattern = Attack1
         self.patterns = [Attack1,Attack2,Attack3,Attack4,Attack5]
+        
         self.pattern_num = 0
         self.idle_time = 0
         self.dir = 0
@@ -55,8 +57,8 @@ class Boss_3:
             Boss_3.attack3_sprite = [load_image('./Asset/Boss_3/attack3/attack%d.png'%i) for i in range(1,71)]
             Boss_3.attack4_sprite = [load_image('./Asset/Boss_3/attack4/attack%d.png'%i) for i in range(4,46)]
             Boss_3.attack5_sprite = [load_image('./Asset/Boss_3/attack5/attack%d.png'%i) for i in range(1,43)]
-            Boss_3.teleport_in_sprite = [load_image('./Asset/Boss_3/teleport in/teleport in (%d).png'%i) for i in range(1,31)]
-            Boss_3.teleport_out_sprite = [load_image('./Asset/Boss_3/teleport out/teleport out (%d).png'%i) for i in range(1,26)]
+            Boss_3.teleport_in_sprite = [load_image('./Asset/Boss_3/teleport in/teleport in (%d).png'%i) for i in range(1,26)]
+            Boss_3.teleport_out_sprite = [load_image('./Asset/Boss_3/teleport out/teleport out (%d).png'%i) for i in range(1,31)]
             Boss_3.death_sprite = [load_image('./Asset/Boss_3/death/death%d.png'%i) for i in range(1,66)]
         pass
 
@@ -79,7 +81,7 @@ class Boss_3:
                 draw_rectangle(*bb)
         
     def set_random_pattern(self):
-        self.next_pattern = Attack5
+        self.next_pattern = Attack1
         #self.next_pattern = random.choice(self.patterns)
         pass
 
@@ -152,17 +154,26 @@ class Attack1:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
+        Boss.black_hole_created = False
         pass
     
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
         Boss.end_attack()
+        Boss.black_hole_created = False
         pass
     
     @staticmethod
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+
+        if int(Boss.frame) == len(Boss.attack1_sprite) // 2 and not Boss.black_hole_created:
+            from Boss_3_Attack import Black_hole
+            black_hole = Black_hole(Server.player.x, Server.player.y)
+            game_world.add_object(black_hole)
+            game_world.add_collision_pair('player:black_hole', Server.player, black_hole)
+            Boss.black_hole_created = True
 
         if int(Boss.frame) == len(Boss.attack1_sprite):
             Boss.state_machine.start(Idle)
