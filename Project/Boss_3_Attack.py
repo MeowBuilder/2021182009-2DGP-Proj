@@ -110,8 +110,9 @@ class Black_hole:
         elif self.state == 'disappear':
             current_time = get_time() - self.start_time
             self.scale = max(1.0 - current_time * 2.0, 0.0)
-            if self.scale == 0.0:  # 0.5초동안 작아짐
+            if self.scale <= 0.0:  # 0.5초동안 작아짐
                 game_world.remove_object(self)
+                
                 
         self.frame = (self.frame + 1) % 9  # 항상 애니메이션 재생
                 

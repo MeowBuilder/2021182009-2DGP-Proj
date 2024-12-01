@@ -171,7 +171,12 @@ class Attack1:
         if int(Boss.frame) == len(Boss.attack1_sprite) // 2 and not Boss.black_hole_created:
             from Boss_3_Attack import Black_hole
             black_hole = Black_hole(Server.player.x, Server.player.y)
-            game_world.add_object(black_hole)
+            game_world.add_object(black_hole, 1)
+            
+            if game_world.collision_pairs.get('player:black_hole'):
+                game_world.collision_pairs['player:black_hole'][0].clear()
+                game_world.collision_pairs['player:black_hole'][1].clear()
+            
             game_world.add_collision_pair('player:black_hole', Server.player, black_hole)
             Boss.black_hole_created = True
 

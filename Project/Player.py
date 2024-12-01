@@ -76,9 +76,9 @@ class Player:
         elif group == 'player:black_hole':
             dx = other.x - self.x
             dy = other.y - self.y
-            distance = max(1, ((dx ** 2 + dy ** 2) ** 0.5))
+            distance = max(0.1, ((dx ** 2 + dy ** 2) ** 0.5))
             
-            pull_force = 15.0 * PIXEL_PER_METER / distance
+            pull_force = 5.0 * PIXEL_PER_METER / (distance ** 0.5)  # 거리의 제곱근으로 나누어 감소율을 낮춤
             
             dir_x = dx / distance 
             dir_y = dy / distance
@@ -154,8 +154,9 @@ class Player:
     def do_attack(self):
         if ((self.state_machine.cur_state == Attack_1 and 5 < self.frame < 9) or 
             (self.state_machine.cur_state == Attack_2 and 10 < self.frame < 18)):
-            game_world.collision_pairs['player:attack'][0].clear()
-            game_world.collision_pairs['player:attack'][1].clear()
+            if game_world.collision_pairs.get('player:attack'):
+                game_world.collision_pairs['player:attack'][0].clear()
+                game_world.collision_pairs['player:attack'][1].clear()
             
             for enemy in self.Enemy:
                 game_world.add_collision_pair('player:attack', self, enemy)
