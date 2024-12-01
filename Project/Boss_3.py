@@ -121,15 +121,6 @@ class Boss_3:
         elif self.HP <= self.MAXHP * 0.3 and self.phase == 2:
             self.state_machine.start(Attack2)
             self.phase = 3
-
-    def do_attack(self):
-        if Server.player.in_range(self,128):
-            Server.player.get_attacked()
-        pass
-    
-    def end_attack(self):
-        game_world.collision_pairs['boss:attack'][0].clear()
-        game_world.collision_pairs['boss:attack'][1].clear()
     
     def handle_collision(self,group,other):
         if group == 'player:attack':
@@ -137,6 +128,9 @@ class Boss_3:
                 self.get_attacked()
         elif group == 'boss:attack':
             pass
+        
+    def teleport(self):
+        self.x, self.y = random.randint(256,Server.Map.w - 256), random.randint(256,Server.Map.h - 256)
     
 class Idle:
     @staticmethod
@@ -173,7 +167,6 @@ class Attack1:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.end_attack()
         Boss.black_hole_created = False
         pass
     
@@ -213,7 +206,6 @@ class Attack2:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.end_attack()
         Boss.is_skill_invincibility = False
         Boss.patterns.append(Attack3)
         pass
@@ -243,7 +235,6 @@ class Attack3:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.end_attack()
         pass
     
     @staticmethod
@@ -280,7 +271,6 @@ class Attack4:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
-        Boss.end_attack()
         Boss.patterns.append(Attack5)
         Boss.is_skill_invincibility = False
         pass
@@ -356,3 +346,54 @@ class Die:
             Boss.death_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'h',Boss.sx ,Boss.sy ,512,512)
         else:
             Boss.death_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'w',Boss.sx ,Boss.sy ,512,512)
+
+class Teleport_in:
+    @staticmethod
+    def enter(Boss):
+        Boss.frame = 0
+        pass
+    
+    @staticmethod
+    def exit(Boss):
+        Boss.frame = 0
+        Boss.teleport()
+        pass
+    
+    @staticmethod
+    def do(Boss):
+        Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+        
+        if int(Boss.frame) >= len(Boss.teleport_in_sprite):
+            Boss.state_machine.start(Teleport_out)
+    
+    @staticmethod
+    def draw(Boss):
+        if Boss.dir < 0:
+            Boss.teleport_in_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'h',Boss.sx ,Boss.sy ,512,512)
+        else:
+            Boss.teleport_in_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'w',Boss.sx ,Boss.sy ,512,512)
+
+class Teleport_out:
+    @staticmethod
+    def enter(Boss):
+        Boss.frame = 0
+        pass
+    
+    @staticmethod
+    def exit(Boss):
+        Boss.frame = 0
+        pass
+    
+    @staticmethod
+    def do(Boss):
+        Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+        
+        if int(Boss.frame) >= len(Boss.teleport_out_sprite):
+            Boss.state_machine.start(Idle)
+    
+    @staticmethod
+    def draw(Boss):
+        if Boss.dir < 0:
+            Boss.teleport_out_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'h',Boss.sx ,Boss.sy ,512,512)
+        else:
+            Boss.teleport_out_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'w',Boss.sx ,Boss.sy ,512,512)
