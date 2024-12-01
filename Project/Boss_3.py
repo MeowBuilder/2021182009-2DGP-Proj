@@ -32,8 +32,8 @@ class Boss_3:
         self.speed = 1
         
         self.cur_pattern = Idle
-        self.next_pattern = Attack1
-        self.patterns = [Attack1,Attack2,Attack3,Attack4,Attack5]
+        self.next_pattern = Attack3
+        self.patterns = [Attack3]
         
         self.pattern_num = 0
         self.idle_time = 0
@@ -47,8 +47,8 @@ class Boss_3:
         
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
-        pass
-    
+        self.attack3_cooldown = 0.1
+        
     def load_image(self):
         if Boss_3.idle_sprite == None:
             Boss_3.idle_sprite = [load_image('./Asset/Boss_3/idle/idle%d.png'%i) for i in range(1,16)]
@@ -81,8 +81,7 @@ class Boss_3:
                 draw_rectangle(*bb)
         
     def set_random_pattern(self):
-        self.next_pattern = Attack1
-        #self.next_pattern = random.choice(self.patterns)
+        self.next_pattern = random.choice(self.patterns)
         pass
 
     def move_to_player(self,Player):
@@ -101,11 +100,18 @@ class Boss_3:
         return self.x - 56, self.y - 224, self.x + 56, self.y + 48
     
     def get_attacked(self):
+        if self.state_machine.cur_state == Attack3:
+            if Attack3.can_decrease:
+                Attack3.own_frame -= 3
+                Attack3.can_decrease = False
+                self.attack3_cooldown = 0.1
+            return
+        
         print(f'BOSS HP : {self.HP}')
         self.HP -= 1
         self.is_invincibility = True
         self.invincibility_timer = 0
-            
+        
         if self.HP == 0:
             self.state_machine.start(Die)
     
@@ -220,6 +226,8 @@ class Attack3:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
+        Attack3.own_frame = 0
+        Attack3.can_decrease = True
         pass
     
     @staticmethod
@@ -230,10 +238,20 @@ class Attack3:
     
     @staticmethod
     def do(Boss):
-        Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+        Attack3.own_frame += FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
+        Boss.frame = min(Attack3.own_frame, len(Boss.attack3_sprite) - 1)
 
-        if int(Boss.frame) == len(Boss.attack3_sprite):
+        if Attack3.own_frame < 0:
             Boss.state_machine.start(Idle)
+        elif int(Boss.frame) >= len(Boss.attack3_sprite) - 1:
+            Server.player.HP = 0
+            Server.player.player_died()
+            Boss.state_machine.start(Idle)
+            
+        if not Attack3.can_decrease:
+            Boss.attack3_cooldown -= game_framework.frame_time
+            if Boss.attack3_cooldown <= 0:
+                Attack3.can_decrease = True
     
     @staticmethod
     def draw(Boss):
@@ -301,7 +319,6 @@ class Attack5:
         else:
             Boss.attack5_sprite[int(Boss.frame)].clip_composite_draw(0,0,320,320,0,'w',Boss.sx,Boss.sy,512,512)
 
-         
 class Die:
     @staticmethod
     def enter(Boss):
@@ -316,8 +333,8 @@ class Die:
     @staticmethod
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
-        if int(Boss.frame) == 19:
-            Boss.dead = True
+        
+        if int(Boss.frame) >= len(Boss.death_sprite):
             Boss.dead_func()
     
     @staticmethod
