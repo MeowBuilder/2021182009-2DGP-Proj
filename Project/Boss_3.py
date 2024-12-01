@@ -32,8 +32,8 @@ class Boss_3:
         self.speed = 1
         
         self.cur_pattern = Idle
-        self.next_pattern = Attack3
-        self.patterns = [Attack3]
+        self.next_pattern = Attack1
+        self.patterns = [Attack1]
         
         self.pattern_num = 0
         self.idle_time = 0
@@ -45,6 +45,7 @@ class Boss_3:
 
         self.dead = False
         
+        self.phase = 1
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
         self.attack3_cooldown = 0.1
@@ -106,15 +107,21 @@ class Boss_3:
                 Attack3.can_decrease = False
                 self.attack3_cooldown = 0.1
             return
-        
-        print(f'BOSS HP : {self.HP}')
-        self.HP -= 1
-        self.is_invincibility = True
-        self.invincibility_timer = 0
-        
+        if self.HP >= 0:
+            print(f'BOSS HP : {self.HP}')
+            self.HP -= 1
+            self.is_invincibility = True
+            self.invincibility_timer = 0
+            
         if self.HP == 0:
             self.state_machine.start(Die)
-    
+        elif self.HP <= self.MAXHP * 0.6 and self.phase == 1:
+            self.state_machine.start(Attack4)
+            self.phase = 2
+        elif self.HP <= self.MAXHP * 0.3 and self.phase == 2:
+            self.state_machine.start(Attack2)
+            self.phase = 3
+
     def do_attack(self):
         if Server.player.in_range(self,128):
             Server.player.get_attacked()
@@ -145,7 +152,7 @@ class Idle:
     def do(Boss):
         Boss.frame = (Boss.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 15
         
-        if get_time() - Boss.idle_time > 5:
+        if get_time() - Boss.idle_time > 5/Boss.phase:
             Boss.state_machine.start(Boss.next_pattern)
             Boss.set_random_pattern()
     
@@ -200,12 +207,15 @@ class Attack2:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
+        Boss.is_skill_invincibility = True
         pass
     
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
         Boss.end_attack()
+        Boss.is_skill_invincibility = False
+        Boss.patterns.append(Attack3)
         pass
     
     @staticmethod
@@ -264,12 +274,15 @@ class Attack4:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
+        Boss.is_skill_invincibility = True
         pass
     
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
         Boss.end_attack()
+        Boss.patterns.append(Attack5)
+        Boss.is_skill_invincibility = False
         pass
     
     @staticmethod
