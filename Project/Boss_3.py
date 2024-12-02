@@ -6,7 +6,7 @@ import random
 import State_Machine
 import game_framework
 import game_world
-import Stage1
+import Stage3
 
 from Speed_info import *
 from Boss_3_Attack import Spike
@@ -94,7 +94,7 @@ class Boss_3:
     def dead_func(self):
         Server.player.Enemy.remove(self)
         game_world.remove_object(self)
-        Stage1.Clear = True
+        Stage3.Clear = True
         pass
     
     def get_bb(self):

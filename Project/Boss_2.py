@@ -386,7 +386,7 @@ class Die:
     def do(Boss):
         Boss.frame = (Boss.frame - FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 1/2)
         if Boss.frame <= 0:
-            Boss.dead = True
+            Boss.dead_func()
     
     @staticmethod
     def draw(Boss):
