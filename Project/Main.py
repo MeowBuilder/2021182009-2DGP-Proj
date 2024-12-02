@@ -11,6 +11,6 @@ init = Boss_3.Boss_3()
 init.load_image()
 del init
 
-game_framework.run(start_mode)
+game_framework.run(test_mode)
 close_canvas()
 

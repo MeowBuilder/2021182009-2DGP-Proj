@@ -29,3 +29,4 @@ def clear():
     player = None
     PlayerUI = None
     TimeUI = None
+    Map = None

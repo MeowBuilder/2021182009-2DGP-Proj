@@ -1,6 +1,7 @@
 from pico2d import *
 import game_framework
 import Stage1
+import Server
 
 LOOP_TIME = 3.0
 FRAME_PER_LOOP = 15
@@ -20,6 +21,7 @@ def handle_events():
 def init():
     global title
     global frame
+    Server.clear()
     frame = 0
     title = [load_image('./Asset/Title/Title-export' + '%d' %i + '.png') for i in range(1,16)]
     pico2d.resize_canvas(1280,720)
