@@ -25,15 +25,15 @@ class Boss_3:
     def __init__(self):
         self.frame = 0
         
-        self.MAXHP = 10
+        self.MAXHP = 50
         self.HP = self.MAXHP
-        self.x, self.y = 640, 720
+        self.x, self.y = 1920/2, 1080/2 + 196
         self.sx, self.sy = 0,0
         self.speed = 1
         
         self.cur_pattern = Idle
         self.next_pattern = Attack1
-        self.patterns = [Attack1]
+        self.patterns = [Attack1,Teleport_in]
         
         self.pattern_num = 0
         self.idle_time = 0
@@ -78,8 +78,6 @@ class Boss_3:
             if not self.dead:
                 self.sx,self.sy = self.x - Server.Map.window_left, self.y - Server.Map.window_bottom
                 self.state_machine.draw()
-                bb = (self.get_bb()[0]- Server.Map.window_left, self.get_bb()[1]- Server.Map.window_bottom, self.get_bb()[2]- Server.Map.window_left, self.get_bb()[3]- Server.Map.window_bottom)
-                draw_rectangle(*bb)
         
     def set_random_pattern(self):
         self.next_pattern = random.choice(self.patterns)
@@ -115,10 +113,10 @@ class Boss_3:
             
         if self.HP == 0:
             self.state_machine.start(Die)
-        elif self.HP <= self.MAXHP * 0.6 and self.phase == 1:
+        elif self.HP <= self.MAXHP * 0.75 and self.phase == 1:
             self.state_machine.start(Attack4)
             self.phase = 2
-        elif self.HP <= self.MAXHP * 0.3 and self.phase == 2:
+        elif self.HP <= self.MAXHP * 0.5 and self.phase == 2:
             self.state_machine.start(Attack2)
             self.phase = 3
     
@@ -351,6 +349,7 @@ class Teleport_in:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
+        Boss.is_skill_invincibility = True
         pass
     
     @staticmethod
@@ -382,6 +381,7 @@ class Teleport_out:
     @staticmethod
     def exit(Boss):
         Boss.frame = 0
+        Boss.is_skill_invincibility = False
         pass
     
     @staticmethod

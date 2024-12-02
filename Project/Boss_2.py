@@ -20,7 +20,7 @@ class Boss_2:
         
         self.MAXHP = 10
         self.HP = self.MAXHP
-        self.x, self.y = 400, 300
+        self.x, self.y = 1920/2, 1080/2
         self.sx, self.sy = 0,0
         self.speed = 1
         self.cur_pattern = Idle

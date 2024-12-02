@@ -64,12 +64,6 @@ class Spike:
                 (self.y - 64 + visible_height/2) - Server.Map.window_bottom,
                 128, visible_height
             )
-        
-        bb = (self.get_bb()[0]- Server.Map.window_left, 
-              self.get_bb()[1]- Server.Map.window_bottom, 
-              self.get_bb()[2]- Server.Map.window_left, 
-              self.get_bb()[3]- Server.Map.window_bottom)
-        draw_rectangle(*bb)
     
     def get_bb(self):
         return self.x - 64, self.y - 64, self.x + 64, self.y + 64
@@ -124,12 +118,6 @@ class Black_hole:
                 self.y - Server.Map.window_bottom,
                 size, size
             )
-            
-        bb = (self.get_bb()[0]- Server.Map.window_left, 
-              self.get_bb()[1]- Server.Map.window_bottom, 
-              self.get_bb()[2]- Server.Map.window_left, 
-              self.get_bb()[3]- Server.Map.window_bottom)
-        draw_rectangle(*bb)
     
     def get_bb(self):
         return self.x - 196, self.y - 196, self.x + 196, self.y + 196

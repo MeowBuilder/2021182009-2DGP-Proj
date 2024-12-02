@@ -29,7 +29,7 @@ def init():
     Server.player.y = 0
     Server.player.Enemy.clear()
         
-    worldmap = Map.Map('Dungeon')
+    worldmap = Map.Map('Temple')
     Server.Map = worldmap
 
     boss_2 = Boss_2()
