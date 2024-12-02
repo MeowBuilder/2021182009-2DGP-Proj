@@ -1,4 +1,6 @@
 from pico2d import *
+
+import Server
 import game_framework
 import game_world
 
@@ -59,7 +61,7 @@ class summon:
             pass
         
     def draw(self):
-        self.sx,self.sy = self.x - self.player.cur_map.window_left, self.y - self.player.cur_map.window_bottom
+        self.sx,self.sy = self.x - Server.Map.window_left, self.y - Server.Map.window_bottom
         if self.Appear:
             if self.dir < 0:
                 self.Appear_sprite.clip_composite_draw(int(self.frame)*50,0,50,50,0,'h',self.sx ,self.sy + 24 ,128,128)
@@ -77,7 +79,7 @@ class summon:
                 self.Death_sprite.clip_composite_draw(int(self.frame)*50,0,50,50,0,'w',self.sx ,self.sy + 24 ,128,128)
             pass
         
-        bb = (self.get_bb()[0]- self.player.cur_map.window_left, self.get_bb()[1]- self.player.cur_map.window_bottom, self.get_bb()[2]- self.player.cur_map.window_left, self.get_bb()[3]- self.player.cur_map.window_bottom)
+        bb = (self.get_bb()[0]- Server.Map.window_left, self.get_bb()[1]- Server.Map.window_bottom, self.get_bb()[2]- Server.Map.window_left, self.get_bb()[3]- Server.Map.window_bottom)
         draw_rectangle(*bb)
     
     def get_attacked(self):
