@@ -78,7 +78,10 @@ class Player:
             dy = other.y - self.y
             distance = max(0.1, ((dx ** 2 + dy ** 2) ** 0.5))
             
-            pull_force = 5.0 * PIXEL_PER_METER / (distance ** 0.5)  # 거리의 제곱근으로 나누어 감소율을 낮춤
+            if distance <= PIXEL_PER_METER/2 and other.state != 'appear':
+                self.get_attacked()
+            
+            pull_force = 5.0 * PIXEL_PER_METER / (distance ** 0.5) 
             
             dir_x = dx / distance 
             dir_y = dy / distance
