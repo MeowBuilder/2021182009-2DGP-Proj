@@ -20,9 +20,9 @@ class Boss_1:
         self.death_sprite = load_image('./Asset/Boss/death.png')
         self.frame = 0
         
-        self.MAXHP = 10
+        self.MAXHP = 50
         self.HP = self.MAXHP
-        self.x, self.y = 640, 720
+        self.x, self.y = 1920 // 2,1080 // 2
         self.sx, self.sy = 0,0
         self.speed = 1
         self.cur_pattern = Idle
@@ -43,14 +43,12 @@ class Boss_1:
         pass
 
     def update(self):
+        self.dir = ((Server.player.x-self.x)/max(1,abs(Server.player.x-self.x)))
         if self.is_invincibility:
             self.invincibility_timer += game_framework.frame_time
             if self.invincibility_timer >= self.invincibility_duration:
                 self.is_invincibility = False
                 self.invincibility_timer = 0
-                
-        if not len(Server.player.Enemy) == 1:
-            self.is_skill_invincibility = True
             
         if not self.dead:
             self.state_machine.update()
@@ -87,11 +85,11 @@ class Boss_1:
             self.is_invincibility = True
             self.invincibility_timer = 0
             
-        if self.HP == 0:
-            self.state_machine.start(Die)
-        elif self.HP <= self.MAXHP/2 and not self.do_under50:
-            self.state_machine.start(under50_skill)
-            self.do_under50 = True
+            if self.HP == 0:
+                self.state_machine.start(Die)
+            elif self.HP <= self.MAXHP/2 and not self.do_under50:
+                self.state_machine.start(under50_skill)
+                self.do_under50 = True
         pass
     
     def do_attack(self):
@@ -107,7 +105,7 @@ class Boss_1:
     
     def handle_collision(self, group, other):
         if group == 'player:attack':
-            if not (self.is_invincibility or self.is_skill_invincibility):
+            if not (self.is_invincibility or self.is_skill_invincibility) and len(Server.player.Enemy) == 1:
                 self.get_attacked()
         elif group == 'boss:attack':
             pass

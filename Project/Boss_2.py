@@ -18,7 +18,7 @@ class Boss_2:
         self.attack_sprite = load_image('./Asset/Boss_2/ATTACK 1.png')
         self.frame = 0
         
-        self.MAXHP = 10
+        self.MAXHP = 40
         self.HP = self.MAXHP
         self.x, self.y = 1920/2, 1080/2
         self.sx, self.sy = 0,0
@@ -41,6 +41,7 @@ class Boss_2:
         pass
 
     def update(self):
+        self.dir = ((Server.player.x-self.x)/max(1,abs(Server.player.x-self.x)))
         if self.is_invincibility:
             self.invincibility_timer += game_framework.frame_time
             if self.invincibility_timer >= self.invincibility_duration:
@@ -76,11 +77,11 @@ class Boss_2:
             self.is_invincibility = True
             self.invincibility_timer = 0
             
-        if self.HP == 0:
-            self.state_machine.start(Die)
-        elif self.HP <= self.MAXHP/2 and not self.do_under50:
-            self.state_machine.start(under50_skill)
-            self.do_under50 = True
+            if self.HP == 0:
+                self.state_machine.start(Die)
+            elif self.HP <= self.MAXHP/2 and not self.do_under50:
+                self.state_machine.start(under50_skill)
+                self.do_under50 = True
 
     def dead_func(self):
         Server.player.Enemy.remove(self)

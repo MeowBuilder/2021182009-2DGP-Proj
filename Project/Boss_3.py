@@ -25,7 +25,7 @@ class Boss_3:
     def __init__(self):
         self.frame = 0
         
-        self.MAXHP = 50
+        self.MAXHP = 60
         self.HP = self.MAXHP
         self.x, self.y = 1920/2, 1080/2 + 196
         self.sx, self.sy = 0,0
@@ -101,7 +101,7 @@ class Boss_3:
     def get_attacked(self):
         if self.state_machine.cur_state == Attack3:
             if Attack3.can_decrease:
-                Attack3.own_frame -= 3
+                Attack3.own_frame -= 2
                 Attack3.can_decrease = False
                 self.attack3_cooldown = 0.1
             return
@@ -111,14 +111,14 @@ class Boss_3:
             self.is_invincibility = True
             self.invincibility_timer = 0
             
-        if self.HP == 0:
-            self.state_machine.start(Die)
-        elif self.HP <= self.MAXHP * 0.75 and self.phase == 1:
-            self.state_machine.start(Attack4)
-            self.phase = 2
-        elif self.HP <= self.MAXHP * 0.5 and self.phase == 2:
-            self.state_machine.start(Attack2)
-            self.phase = 3
+            if self.HP == 0:
+                self.state_machine.start(Die)
+            elif self.HP <= self.MAXHP * 0.75 and self.phase == 1:
+                self.state_machine.start(Attack4)
+                self.phase = 2
+            elif self.HP <= self.MAXHP * 0.5 and self.phase == 2:
+                self.state_machine.start(Attack2)
+                self.phase = 3
     
     def handle_collision(self,group,other):
         if group == 'player:attack':

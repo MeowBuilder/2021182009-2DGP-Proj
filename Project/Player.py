@@ -15,7 +15,7 @@ class Player:
         self.dash_sprite = [load_image('./Asset/Character/Front DashnRoll.png'),load_image('./Asset/Character/Back Dash.png'),load_image('./Asset/Character/Side Dash.png')]
         self.frame = 0
         
-        self.x,self.y = 640,360
+        self.x,self.y = 1920 // 2,0
         self.sx,self.sy = get_canvas_width() // 2,get_canvas_height() // 2
         
         self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
