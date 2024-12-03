@@ -60,9 +60,6 @@ class Boss_1:
             if not self.dead:
                 self.sx,self.sy = self.x - Server.Map.window_left, self.y - Server.Map.window_bottom
                 self.state_machine.draw()
-                
-                bb = (self.get_bb()[0]- Server.Map.window_left, self.get_bb()[1]- Server.Map.window_bottom, self.get_bb()[2]- Server.Map.window_left, self.get_bb()[3]- Server.Map.window_bottom)
-                draw_rectangle(*bb)
         
     def set_random_pattern(self):
         self.next_pattern = random.choice(self.patterns)
@@ -84,10 +81,11 @@ class Boss_1:
         return self.x - 64, self.y - 96, self.x + 72, self.y + 64
     
     def get_attacked(self):
-        print(f'BOSS HP : {self.HP}')
-        self.HP -= 1
-        self.is_invincibility = True
-        self.invincibility_timer = 0  # 타이머 리셋
+        if self.HP > 0:
+            print(f'BOSS HP : {self.HP}')
+            self.HP -= 1
+            self.is_invincibility = True
+            self.invincibility_timer = 0
             
         if self.HP == 0:
             self.state_machine.start(Die)

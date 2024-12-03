@@ -105,7 +105,7 @@ class Boss_3:
                 Attack3.can_decrease = False
                 self.attack3_cooldown = 0.1
             return
-        if self.HP >= 0:
+        if self.HP > 0:
             print(f'BOSS HP : {self.HP}')
             self.HP -= 1
             self.is_invincibility = True

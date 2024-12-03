@@ -59,10 +59,6 @@ class Boss_2:
                 self.sx,self.sy = self.x - Server.Map.window_left, self.y - Server.Map.window_bottom
                 self.state_machine.draw()
                 
-                bb = (self.get_bb()[0]- Server.Map.window_left, self.get_bb()[1]- Server.Map.window_bottom,
-                      self.get_bb()[2]- Server.Map.window_left, self.get_bb()[3]- Server.Map.window_bottom)
-                draw_rectangle(*bb)
-                
     def set_random_pattern(self):
         self.next_pattern = random.choice(self.patterns)
         pass
@@ -74,10 +70,11 @@ class Boss_2:
         pass
     
     def get_attacked(self):
-        print(f'BOSS HP : {self.HP}')
-        self.HP -= 1
-        self.is_invincibility = True
-        self.invincibility_timer = 0
+        if self.HP > 0:
+            print(f'BOSS HP : {self.HP}')
+            self.HP -= 1
+            self.is_invincibility = True
+            self.invincibility_timer = 0
             
         if self.HP == 0:
             self.state_machine.start(Die)
@@ -384,7 +381,7 @@ class Die:
     
     @staticmethod
     def do(Boss):
-        Boss.frame = (Boss.frame - FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 1/2)
+        Boss.frame = (Boss.frame - FRAMES_PER_ACTION * (ACTION_PER_TIME * 1/10) * game_framework.frame_time)
         if Boss.frame <= 0:
             Boss.dead_func()
     

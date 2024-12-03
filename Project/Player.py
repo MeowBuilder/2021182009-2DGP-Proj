@@ -58,12 +58,8 @@ class Player:
     def draw(self):
         self.sx,self.sy = self.x - Server.Map.window_left, self.y - Server.Map.window_bottom
         
-        # 피격 무적일 때만 깜빡이고, 대시 무적일 때는 빡이지 않음
         if not self.is_invincibility or self.is_dash_invincibility or int(self.invincibility_timer * 10) % 2:
             self.state_machine.draw()
-        
-        bb = (self.get_bb()[0]- Server.Map.window_left, self.get_bb()[1]- Server.Map.window_bottom, self.get_bb()[2]- Server.Map.window_left, self.get_bb()[3]- Server.Map.window_bottom)
-        draw_rectangle(*bb)
         
     def handle_collision(self, group, other):
         if group == 'player:enemy':
