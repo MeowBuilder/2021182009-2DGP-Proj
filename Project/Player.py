@@ -1,4 +1,5 @@
 from pico2d import *
+import Gameover
 import Server
 import State_Machine
 import game_framework
@@ -18,9 +19,10 @@ class Player:
         self.x,self.y = 1920 // 2,0
         self.sx,self.sy = get_canvas_width() // 2,get_canvas_height() // 2
         
-        self.dir = [True,False,False,False] # 0:앞   1:뒤  2:오른쪽    3:왼쪽
-        self.base_speed = 1  # 기본 속도 저장
+        self.dir = [False,True,False,False]
+        self.base_speed = 1
         self.speed = self.base_speed
+        self.HP = 5
         
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
@@ -29,11 +31,28 @@ class Player:
         
         self.is_invincibility = False
         self.invincibility_timer = 0
-        self.invincibility_duration = 2.0  # 2초간 무적
-        self.is_dash_invincibility = False  # 대시 무적 상태를 따로 관리
+        self.invincibility_duration = 2.0
+        self.is_dash_invincibility = False
         self.attack_side = 0
+        self.colliding_enemies = 0
+        
+    def Reset(self):
+        self.x,self.y = 1920 // 2,0
+        self.sx,self.sy = get_canvas_width() // 2,get_canvas_height() // 2
+        
+        self.dir = [True,False,False,False]
+        self.base_speed = 1
+        self.speed = self.base_speed
         self.HP = 5
-        self.colliding_enemies = 0  # 충돌 중인 적의 수를 추적
+        
+        self.state_machine = State_Machine.StateMachine(self)
+        self.state_machine.start(Idle)
+        
+        self.is_invincibility = False
+        self.invincibility_timer = 0
+        self.is_dash_invincibility = False
+        self.attack_side = 0
+        self.colliding_enemies = 0
         
     def update(self):
         self.state_machine.update()
@@ -166,8 +185,7 @@ class Player:
 
     def player_died(self):
         self.HP = 5
-        self.cur_stage.finish()
-        self.cur_stage.init()
+        game_framework.change_mode(Gameover)
         pass
         
     def in_range(self,Other, range = 128):

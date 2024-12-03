@@ -1,12 +1,12 @@
 from asyncio import Server
 from pico2d import *
 import Server
+import Stage1
 import Stage2
 import game_framework
 
 import game_world
 from Player import *
-from Server import TimeUI
 from UI import *
 from Boss_1 import *
 from summon import *

@@ -95,7 +95,8 @@ class Boss_2:
     def do_attack(self):
         if ((self.state_machine.cur_state == Attack1 and 5 < self.frame < 9) or 
             (self.state_machine.cur_state == counter_attack and 4 < self.frame < 7) or 
-            (self.state_machine.cur_state == under50_skill and self.in_range)):
+            (self.state_machine.cur_state == under50_skill and self.in_range) or
+            (self.state_machine.cur_state == dash_attack and 3 < self.frame < 7)):
             game_world.collision_pairs['boss:attack'][0].clear()
             game_world.collision_pairs['boss:attack'][1].clear()
             game_world.add_collision_pair('boss:attack', self, Server.player)
