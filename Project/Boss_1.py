@@ -20,7 +20,7 @@ class Boss_1:
         self.death_sprite = load_image('./Asset/Boss/death.png')
         self.frame = 0
         
-        self.MAXHP = 50
+        self.MAXHP = 1
         self.HP = self.MAXHP
         self.x, self.y = 1920 // 2,1080 // 2
         self.sx, self.sy = 0,0

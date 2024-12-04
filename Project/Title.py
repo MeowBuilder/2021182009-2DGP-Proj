@@ -1,6 +1,7 @@
 from pico2d import *
 import game_framework
 import Stage1
+import Records
 import Server
 
 LOOP_TIME = 3.0
@@ -15,6 +16,8 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_z:
             game_framework.change_mode(Stage1)
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_r:
+            game_framework.change_mode(Records)
         else:
             pass
 

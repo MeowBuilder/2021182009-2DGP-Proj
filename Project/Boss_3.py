@@ -25,7 +25,7 @@ class Boss_3:
     def __init__(self):
         self.frame = 0
         
-        self.MAXHP = 60
+        self.MAXHP = 50
         self.HP = self.MAXHP
         self.x, self.y = 1920/2, 1080/2 + 196
         self.sx, self.sy = 0,0
