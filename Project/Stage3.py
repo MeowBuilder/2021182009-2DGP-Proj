@@ -46,10 +46,17 @@ def init():
     game_world.add_object(boss_3,1)
     game_world.add_object(Server.PlayerUI,3)
     game_world.add_object(Server.TimeUI,3)
+    
+    global music
+    music = load_music('./Asset/Music/Stage3_Music.mp3')
+    music.set_volume(36)
+    music.repeat_play()
+    music.play()
     pass
 
 
 def finish():
+    music.stop()
     game_world.clear()
     pass
 

@@ -16,6 +16,14 @@ class Player:
         self.dash_sprite = [load_image('./Asset/Character/Front DashnRoll.png'),load_image('./Asset/Character/Back Dash.png'),load_image('./Asset/Character/Side Dash.png')]
         self.frame = 0
         
+        self.attack_SFX = [load_wav('./Asset/SFX/player_attack_1.wav'),load_wav('./Asset/SFX/player_attack_2.wav')]
+        self.attack_SFX[0].set_volume(32)
+        self.attack_SFX[1].set_volume(32)
+        self.dash_SFX = load_wav('./Asset/SFX/player_dash.wav')
+        self.dash_SFX.set_volume(32)
+        self.get_attacked_SFX = load_wav('./Asset/SFX/player_damaged.wav')
+        self.get_attacked_SFX.set_volume(32)
+        
         self.x,self.y = 1920 // 2,0
         self.sx,self.sy = get_canvas_width() // 2,get_canvas_height() // 2
         
@@ -161,6 +169,7 @@ class Player:
     def get_attacked(self):
         # 일반 무적이나 대시 무적 중 하나라도 있으면 데미지를 입지 않음
         if not (self.is_invincibility or self.is_dash_invincibility):
+            self.get_attacked_SFX.play()
             self.HP -= 1
             self.is_invincibility = True
             self.invincibility_timer = 0  # 타이머 리셋
@@ -265,6 +274,7 @@ class Move:
 class Attack_1:
     @staticmethod
     def enter(player):
+        player.attack_SFX[0].play()
         player.frame = 0
         player.attack_side = 0
         pass
@@ -308,6 +318,7 @@ class Attack_1:
 class Attack_2:
     @staticmethod
     def enter(player):
+        player.attack_SFX[1].play()
         pass
     
     @staticmethod
@@ -357,7 +368,7 @@ class Dash:
         player.frame = 0
         player.base_speed += 2  # base_speed를 수정
         player.speed = player.base_speed
-        
+        player.dash_SFX.play()
     @staticmethod
     def exit(player):
         player.is_dash_invincibility = False

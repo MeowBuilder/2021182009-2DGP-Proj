@@ -21,13 +21,20 @@ def handle_events():
 def init():
     global title
     global frame
+    global music
     Server.clear()
     frame = 0
     title = [load_image('./Asset/Title/Title-export' + '%d' %i + '.png') for i in range(1,16)]
     pico2d.resize_canvas(1280,720)
+    
+    music = load_music('./Asset/Music/Title_Music.mp3')
+    music.set_volume(36)
+    music.repeat_play()
+    music.play()
     pass
 
 def finish():
+    music.stop()
     pass
 
 def update():

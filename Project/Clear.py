@@ -26,9 +26,16 @@ def init():
     Clear_time = Server.TimeUI.time
     Font = load_font('./Asset/Font/PF스타더스트 3.0 Bold.TTF',96)
     Font_2 = load_font('./Asset/Font/PF스타더스트 3.0 Bold.TTF',48)
+    
+    global music
+    music = load_music('./Asset/Music/Clear_Music.mp3')
+    music.set_volume(36)
+    music.repeat_play()
+    music.play()
     pass
 
 def finish():
+    music.stop()
     game_world.clear()
     pass
 

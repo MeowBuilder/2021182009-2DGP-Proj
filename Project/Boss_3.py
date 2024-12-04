@@ -50,6 +50,9 @@ class Boss_3:
         self.state_machine.start(Idle)
         self.attack3_cooldown = 0.1
         
+        self.SFX = load_wav('./Asset/SFX/StageClear.wav')
+        self.SFX.set_volume(32)
+        
     def load_image(self):
         if Boss_3.idle_sprite == None:
             Boss_3.idle_sprite = [load_image('./Asset/Boss_3/idle/idle%d.png'%i) for i in range(1,16)]
@@ -324,6 +327,7 @@ class Die:
     @staticmethod
     def enter(Boss):
         Boss.frame = 0
+        Boss.SFX.play()
         pass
     
     @staticmethod

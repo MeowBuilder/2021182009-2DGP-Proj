@@ -32,4 +32,4 @@ class Time:
             self.time += game_framework.frame_time
         
     def draw(self):
-        self.Font.draw(self.x,self.y,'Time : %.2f' %(self.time),(255,255,255))
+        self.Font.draw(self.x,self.y,'Time : %.2f' %(self.time/60),(255,255,255))

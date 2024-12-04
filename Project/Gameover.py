@@ -24,6 +24,10 @@ def init():
     global Font_2
     Gameover_title = load_image('./Asset/Title/Gameover_title.png')
     Font = load_font('./Asset/Font/PF스타더스트 3.0 Bold.TTF',48)
+    global SFX
+    SFX = load_wav('./Asset/SFX/game_over.wav')
+    SFX.set_volume(32)
+    SFX.play()
     pass
 
 def finish():

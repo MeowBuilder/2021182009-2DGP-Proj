@@ -38,6 +38,9 @@ class Boss_2:
         
         self.state_machine = State_Machine.StateMachine(self)
         self.state_machine.start(Idle)
+        
+        self.SFX = load_wav('./Asset/SFX/StageClear.wav')
+        self.SFX.set_volume(32)
         pass
 
     def update(self):
@@ -374,6 +377,7 @@ class Die:
     @staticmethod
     def enter(Boss):
         Boss.frame = 3
+        Boss.SFX.play()
         pass
     
     @staticmethod
