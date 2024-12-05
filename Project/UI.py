@@ -30,6 +30,8 @@ class Time:
     def update(self):
         if not self.pause_time:
             self.time += game_framework.frame_time
-        
+            
     def draw(self):
-        self.Font.draw(self.x,self.y,'Time : %.2f' %(self.time/60),(255,255,255))
+        minutes = int(self.time // 60)
+        seconds = self.time % 60
+        self.Font.draw(self.x, self.y, f'Time : {minutes:02d}:{seconds:05.2f}', (255,255,255))

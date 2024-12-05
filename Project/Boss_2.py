@@ -18,7 +18,7 @@ class Boss_2:
         self.attack_sprite = load_image('./Asset/Boss_2/ATTACK 1.png')
         self.frame = 0
         
-        self.MAXHP = 40
+        self.MAXHP = 30
         self.HP = self.MAXHP
         self.x, self.y = 1920/2, 1080/2
         self.sx, self.sy = 0,0

@@ -48,8 +48,9 @@ def draw():
     # 기록 출력
     start_y = get_canvas_height() - 200
     for i, record in enumerate(records):
-        time_str = f"{record['time']:.2f}"
-        text = f"{i+1}. {time_str} seconds"
+        minutes = int(record['time'] // 60)
+        seconds = record['time'] % 60
+        text = f"{i+1}. {minutes:02d}:{seconds:05.2f}"
         Font_records.draw(get_canvas_width()//2 - 150, start_y - i*50, text, (255, 255, 255))
     
     # 안내 메시지
