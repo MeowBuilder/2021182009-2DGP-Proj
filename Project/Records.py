@@ -51,11 +51,11 @@ def draw():
         minutes = int(record['time'] // 60)
         seconds = record['time'] % 60
         text = f"{i+1}. {minutes:02d}:{seconds:05.2f}"
-        Font_records.draw(get_canvas_width()//2 - 150, start_y - i*50, text, (255, 255, 255))
+        Font_records.draw(150, start_y - i*50, text, (255, 255, 255))
     
     # 안내 메시지
-    Font_records.draw(get_canvas_width()//2 - 450, 100, 'Press Z to Return to Title', (255, 255, 255))
-    Font_records.draw(get_canvas_width()//2 - 450, 50, 'Press C to Clear Records', (255, 255, 255))
+    Font_records.draw(get_canvas_width()//2, 100, 'Press Z to Return to Title', (255, 255, 255))
+    Font_records.draw(get_canvas_width()//2, 50, 'Press C to Clear Records', (255, 255, 255))
     
     update_canvas()
 
